@@ -51,6 +51,12 @@ const allFeatureVidsMobileP = document.querySelectorAll(
 );
 const allFeatureEndVids = document.querySelectorAll(".vid.end");
 const allFeatureEndVidsMobileP = document.querySelectorAll(".vid.end-mobile-p");
+const allSectionVidsFeatures = [
+  ...allFeatureVids,
+  ...allFeatureVidsMobileP,
+  ...allFeatureEndVids,
+  ...allFeatureEndVidsMobileP,
+];
 let activeVidAllWrapper;
 let vidFlag;
 let newTimer;
@@ -71,6 +77,7 @@ const dotVidAssemble = document.querySelector(".vid.assemble");
 const dotVidAssembleMobileP = document.querySelector(".vid.assemble-mobile-p");
 const allDotVids = [dotVidExplode, dotVidAssemble];
 const allDotVidsMobileP = [dotVidExplodeMobileP, dotVidAssembleMobileP];
+const allSectionVidsComponents = [...allDotVids, ...allDotVidsMobileP];
 const dotExplodeButton = document.querySelector(".dots-btn.explode");
 const dotAssembleButton = document.querySelector(".dots-btn.assemble");
 const explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
@@ -97,11 +104,16 @@ const allDataZoomVids = document.querySelectorAll(".vid.datazoom");
 const allDataZoomVidsMobileP = document.querySelectorAll(
   ".vid.datazoom-mobile-p"
 );
+const allSectionVidsDatasheets = [
+  ...allDataZoomVids,
+  ...allDataZoomVidsMobileP,
+];
 const allTextImageButtons = document.querySelectorAll(".text-image-btn");
 const allDataZoomSubHeadings = document.querySelectorAll(
   ".datazoom-subheading"
 );
 const allDataZoomText = document.querySelectorAll(".datazoom-text");
+
 let activeDataZoomComp;
 let imageTextFlag = "text";
 let fromExplodeAssemble = false;
@@ -117,6 +129,10 @@ const allInstructionVids = document.querySelectorAll(".vid.instruction");
 const allInstructionVidsMobileP = document.querySelectorAll(
   ".vid.instruction-mobile-p"
 );
+const allSectionVidsInstructions = [
+  ...allInstructionVids,
+  ...allInstructionVidsMobileP,
+];
 const allClickDivs = document.querySelectorAll(".click-div");
 const pauseWrapper = document.querySelector(".pause-wrapper");
 let ActiveInstructionAllWrapper;
@@ -127,28 +143,11 @@ let instructionVidLooping = false;
 //....................................................................
 //COLLECTION DEFINITIONS
 const allVideos = [
-  ...allFeatureVids,
-  ...allFeatureVidsMobileP,
-  ...allFeatureEndVids,
-  ...allFeatureEndVidsMobileP,
-  ...allDotVids,
-  ...allDotVidsMobileP,
-  ...allDataZoomVids,
-  ...allDataZoomVidsMobileP,
-  ...allInstructionVids,
-  ...allInstructionVidsMobileP,
+  ...allSectionVidsFeatures,
+  ...allSectionVidsComponents,
+  ...allSectionVidsDatasheets,
+  ...allSectionVidsInstructions,
 ];
-//....................................................................
-//CONSTRUCTION ZONE
-// const DeactivateAllActivateOne = function (deactivate, className, activate) {
-//   // console.log(...deactivate);
-//   [...deactivate].forEach(function (el) {
-//     console.log(el);
-//     el.classList.remove(className);
-//     if (el.classList.contains(activate)) el.classList.add(className);
-//   });
-// };
-// DeactivateAllActivateOne(allFeatureButtons, "active", "second");
 //....................................................................
 //UNIVERSAL FUNCTIONS
 const ResetAndPauseAllVideos = function () {
@@ -297,6 +296,26 @@ window.addEventListener("load", function () {
   }, FLASH_START_BLACKOUT);
 });
 //....................................................................
+//CONSTRUCTION ZONE
+const DeactivateAllActivateOne = function (deactivate, className, activate) {
+  let activatedValue;
+  deactivate.forEach(function (el) {
+    el.classList.remove(className);
+    if (el.classList.contains(activate)) {
+      el.classList.add(className);
+      activatedValue = el;
+    }
+  });
+  return activatedValue;
+};
+// const PlaySectionVids = function (sectionVids) {
+//   sectionVids.forEach(function (el) {
+//     el.play();
+//   });
+// };
+// let activated = DeactivateAllActivateOne(allFeatureButtons, "active", "second");
+// activated.style.backgroundColor = "grey";
+//....................................................................
 //FEATURES SECTION
 ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".feature-btn");
@@ -317,23 +336,16 @@ allFeatureVids.forEach(function (el) {
   });
 });
 const SetActiveVidAndPlay = function (vidFlag) {
-  allFeatureVids.forEach(function (el) {
-    el.currentTime = 0;
-  });
-  allFeatureEndVids.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
+  RewindAndPauseAllFeatureVids();
   allFeatureVidWrappers.forEach(function (el) {
     el.classList.add("active");
   });
-  allFeatureVidAllWrappers.forEach(function (el) {
-    el.classList.remove("active");
-    if (el.classList.contains(vidFlag)) {
-      el.classList.add("active");
-      activeVidAllWrapper = el;
-    }
-  });
+  activeVidAllWrapper = DeactivateAllActivateOne(
+    allFeatureVidAllWrappers,
+    "active",
+    vidFlag
+  );
+
   allFeatureVidContentWrappers.forEach(function (el) {
     el.classList.remove("active");
   });
@@ -343,8 +355,15 @@ const SetActiveVidAndPlay = function (vidFlag) {
       .classList.add("active");
     return;
   }
+  // PlaySectionVids();
   activeVidAllWrapper.querySelector(".vid.feature").play();
   activeVidAllWrapper.querySelector(".vid.feature-mobile-p").play();
+};
+const RewindAndPauseAllFeatureVids = function () {
+  allSectionVidsFeatures.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
 };
 const SetActiveEndVidAndPlay = function () {
   activeVidAllWrapper.querySelectorAll(".vid-wrapper").forEach(function (el) {
@@ -526,6 +545,9 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     allDataZoomVids.forEach(function (el) {
       el.currentTime = 0;
     });
+    allDataZoomVidsMobileP.forEach(function (el) {
+      el.currentTime = 0;
+    });
     datasheetsAllWrapper.style.display = "grid";
     setTimeout(function () {
       datasheetsAllWrapper.classList.add("active");
@@ -538,6 +560,9 @@ datasheetsAllWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".datasheet-card-wrapper");
   if (!clicked) return;
   allDataZoomVids.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  allDataZoomVidsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
   ActivateDataZoomWrapper(clicked.classList[1]);

@@ -49,6 +49,12 @@
   );
   var allFeatureEndVids = document.querySelectorAll(".vid.end");
   var allFeatureEndVidsMobileP = document.querySelectorAll(".vid.end-mobile-p");
+  var allSectionVidsFeatures = [
+    ...allFeatureVids,
+    ...allFeatureVidsMobileP,
+    ...allFeatureEndVids,
+    ...allFeatureEndVidsMobileP
+  ];
   var activeVidAllWrapper;
   var vidFlag;
   var newTimer;
@@ -66,6 +72,7 @@
   var dotVidAssembleMobileP = document.querySelector(".vid.assemble-mobile-p");
   var allDotVids = [dotVidExplode, dotVidAssemble];
   var allDotVidsMobileP = [dotVidExplodeMobileP, dotVidAssembleMobileP];
+  var allSectionVidsComponents = [...allDotVids, ...allDotVidsMobileP];
   var dotExplodeButton = document.querySelector(".dots-btn.explode");
   var dotAssembleButton = document.querySelector(".dots-btn.assemble");
   var explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
@@ -90,6 +97,10 @@
   var allDataZoomVidsMobileP = document.querySelectorAll(
     ".vid.datazoom-mobile-p"
   );
+  var allSectionVidsDatasheets = [
+    ...allDataZoomVids,
+    ...allDataZoomVidsMobileP
+  ];
   var allTextImageButtons = document.querySelectorAll(".text-image-btn");
   var allDataZoomSubHeadings = document.querySelectorAll(
     ".datazoom-subheading"
@@ -108,6 +119,10 @@
   var allInstructionVidsMobileP = document.querySelectorAll(
     ".vid.instruction-mobile-p"
   );
+  var allSectionVidsInstructions = [
+    ...allInstructionVids,
+    ...allInstructionVidsMobileP
+  ];
   var allClickDivs = document.querySelectorAll(".click-div");
   var pauseWrapper = document.querySelector(".pause-wrapper");
   var ActiveInstructionAllWrapper;
@@ -116,16 +131,10 @@
   var pauseFlag = false;
   var instructionVidLooping = false;
   var allVideos = [
-    ...allFeatureVids,
-    ...allFeatureVidsMobileP,
-    ...allFeatureEndVids,
-    ...allFeatureEndVidsMobileP,
-    ...allDotVids,
-    ...allDotVidsMobileP,
-    ...allDataZoomVids,
-    ...allDataZoomVidsMobileP,
-    ...allInstructionVids,
-    ...allInstructionVidsMobileP
+    ...allSectionVidsFeatures,
+    ...allSectionVidsComponents,
+    ...allSectionVidsDatasheets,
+    ...allSectionVidsInstructions
   ];
   var ResetAndPauseAllVideos = function() {
     allVideos.forEach(function(el) {
@@ -259,6 +268,17 @@
       blackout.classList.add("off");
     }, FLASH_START_BLACKOUT);
   });
+  var DeactivateAllActivateOne = function(deactivate, className, activate) {
+    let activatedValue;
+    deactivate.forEach(function(el) {
+      el.classList.remove(className);
+      if (el.classList.contains(activate)) {
+        el.classList.add(className);
+        activatedValue = el;
+      }
+    });
+    return activatedValue;
+  };
   ctrlBtnWrapper.addEventListener("click", function(e) {
     const clicked = e.target.closest(".feature-btn");
     if (!clicked) return;
@@ -276,23 +296,15 @@
     });
   });
   var SetActiveVidAndPlay = function(vidFlag2) {
-    allFeatureVids.forEach(function(el) {
-      el.currentTime = 0;
-    });
-    allFeatureEndVids.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
+    RewindAndPauseAllFeatureVids();
     allFeatureVidWrappers.forEach(function(el) {
       el.classList.add("active");
     });
-    allFeatureVidAllWrappers.forEach(function(el) {
-      el.classList.remove("active");
-      if (el.classList.contains(vidFlag2)) {
-        el.classList.add("active");
-        activeVidAllWrapper = el;
-      }
-    });
+    activeVidAllWrapper = DeactivateAllActivateOne(
+      allFeatureVidAllWrappers,
+      "active",
+      vidFlag2
+    );
     allFeatureVidContentWrappers.forEach(function(el) {
       el.classList.remove("active");
     });
@@ -302,6 +314,12 @@
     }
     activeVidAllWrapper.querySelector(".vid.feature").play();
     activeVidAllWrapper.querySelector(".vid.feature-mobile-p").play();
+  };
+  var RewindAndPauseAllFeatureVids = function() {
+    allSectionVidsFeatures.forEach(function(el) {
+      el.currentTime = 0;
+      el.pause();
+    });
   };
   var SetActiveEndVidAndPlay = function() {
     activeVidAllWrapper.querySelectorAll(".vid-wrapper").forEach(function(el) {
@@ -470,6 +488,9 @@
       allDataZoomVids.forEach(function(el) {
         el.currentTime = 0;
       });
+      allDataZoomVidsMobileP.forEach(function(el) {
+        el.currentTime = 0;
+      });
       datasheetsAllWrapper.style.display = "grid";
       setTimeout(function() {
         datasheetsAllWrapper.classList.add("active");
@@ -482,6 +503,9 @@
     const clicked = e.target.closest(".datasheet-card-wrapper");
     if (!clicked) return;
     allDataZoomVids.forEach(function(el) {
+      el.currentTime = 0;
+    });
+    allDataZoomVidsMobileP.forEach(function(el) {
       el.currentTime = 0;
     });
     ActivateDataZoomWrapper(clicked.classList[1]);
