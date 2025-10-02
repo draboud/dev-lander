@@ -1,5 +1,5 @@
 //UNIVERSAL DEFINITIONS
-console.log("dev lander - Oct 1, 2025");
+//....................................................................
 let blackoutFlag = true;
 const FEATURE_MAIN_VID_REPLAY = 5000;
 const DATASHEET_BUTTON_TIMER = 1500;
@@ -94,6 +94,9 @@ const allDataZoomContentWrappers = document.querySelectorAll(
 const allDataZoomDimmers = document.querySelectorAll(".dimmer");
 const allDataZoomImages = document.querySelectorAll(".datazoom-image");
 const allDataZoomVids = document.querySelectorAll(".vid.datazoom");
+const allDataZoomVidsMobileP = document.querySelectorAll(
+  ".vid.datazoom-mobile-p"
+);
 const allTextImageButtons = document.querySelectorAll(".text-image-btn");
 const allDataZoomSubHeadings = document.querySelectorAll(
   ".datazoom-subheading"
@@ -111,6 +114,9 @@ const instructionsContentWrapper = document.querySelector(
   ".instructions-content-wrapper"
 );
 const allInstructionVids = document.querySelectorAll(".vid.instruction");
+const allInstructionVidsMobileP = document.querySelectorAll(
+  ".vid.instruction-mobile-p"
+);
 const allClickDivs = document.querySelectorAll(".click-div");
 const pauseWrapper = document.querySelector(".pause-wrapper");
 let ActiveInstructionAllWrapper;
@@ -118,6 +124,51 @@ let currentVid = 1;
 let instructionVidTimer;
 let pauseFlag = false;
 let instructionVidLooping = false;
+//....................................................................
+//COLLECTION DEFINITIONS
+const allVideos = [
+  ...allFeatureVids,
+  ...allFeatureVidsMobileP,
+  ...allFeatureEndVids,
+  ...allFeatureEndVidsMobileP,
+  ...allDotVids,
+  ...allDotVidsMobileP,
+  ...allDataZoomVids,
+  ...allDataZoomVidsMobileP,
+  ...allInstructionVids,
+  ...allInstructionVidsMobileP,
+];
+//....................................................................
+//CONSTRUCTION ZONE
+// const DeactivateAllActivateOne = function (deactivate, className, activate) {
+//   // console.log(...deactivate);
+//   [...deactivate].forEach(function (el) {
+//     console.log(el);
+//     el.classList.remove(className);
+//     if (el.classList.contains(activate)) el.classList.add(className);
+//   });
+// };
+// DeactivateAllActivateOne(allFeatureButtons, "active", "second");
+//....................................................................
+//UNIVERSAL FUNCTIONS
+const ResetAndPauseAllVideos = function () {
+  allVideos.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+};
+const FlashStartBlackout = function () {
+  blackout.classList.remove("off");
+  setTimeout(function () {
+    blackout.classList.add("off");
+  }, FLASH_START_BLACKOUT);
+};
+const FlashBlackout = function (value) {
+  blackout.classList.remove("off");
+  setTimeout(function () {
+    blackout.classList.add("off");
+  }, value);
+};
 //....................................................................
 //UNIVERSAL OPERATIONS
 navBar.addEventListener("click", function (e) {
@@ -230,44 +281,6 @@ const ActivateSection = function (value) {
       if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
       break;
   }
-};
-const ResetAndPauseAllVideos = function () {
-  allFeatureVids.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-  allFeatureEndVids.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-  allDotVids.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-  allDotVidsMobileP.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-  allDataZoomVids.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-  allInstructionVids.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-};
-const FlashStartBlackout = function () {
-  blackout.classList.remove("off");
-  setTimeout(function () {
-    blackout.classList.add("off");
-  }, FLASH_START_BLACKOUT);
-};
-const FlashBlackout = function (value) {
-  blackout.classList.remove("off");
-  setTimeout(function () {
-    blackout.classList.add("off");
-  }, value);
 };
 //....................................................................
 blackout.classList.remove("off");
@@ -597,11 +610,10 @@ const ActivateDataZoomWrapper = function (value) {
     el.classList.remove("active");
     if (el.classList.contains(value)) {
       el.classList.add("active");
-      el.querySelectorAll(".vid.datazoom").forEach(function (el2) {
-        setTimeout(function () {
-          el2.play();
-        }, PLAY_DATASHEET_VID_AFTER_DELAY);
-      });
+      setTimeout(function () {
+        el.querySelector(".vid.datazoom").play();
+        el.querySelector(".vid.datazoom-mobile-p").play();
+      }, PLAY_DATASHEET_VID_AFTER_DELAY);
     }
   });
   activeDataZoomComp = document.querySelector(

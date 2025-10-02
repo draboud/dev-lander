@@ -1,6 +1,5 @@
 (() => {
   // script.js
-  console.log("dev lander - Oct 1, 2025");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 5e3;
   var DATASHEET_BUTTON_TIMER = 1500;
@@ -88,6 +87,9 @@
   var allDataZoomDimmers = document.querySelectorAll(".dimmer");
   var allDataZoomImages = document.querySelectorAll(".datazoom-image");
   var allDataZoomVids = document.querySelectorAll(".vid.datazoom");
+  var allDataZoomVidsMobileP = document.querySelectorAll(
+    ".vid.datazoom-mobile-p"
+  );
   var allTextImageButtons = document.querySelectorAll(".text-image-btn");
   var allDataZoomSubHeadings = document.querySelectorAll(
     ".datazoom-subheading"
@@ -103,6 +105,9 @@
     ".instructions-content-wrapper"
   );
   var allInstructionVids = document.querySelectorAll(".vid.instruction");
+  var allInstructionVidsMobileP = document.querySelectorAll(
+    ".vid.instruction-mobile-p"
+  );
   var allClickDivs = document.querySelectorAll(".click-div");
   var pauseWrapper = document.querySelector(".pause-wrapper");
   var ActiveInstructionAllWrapper;
@@ -110,6 +115,30 @@
   var instructionVidTimer;
   var pauseFlag = false;
   var instructionVidLooping = false;
+  var allVideos = [
+    ...allFeatureVids,
+    ...allFeatureVidsMobileP,
+    ...allFeatureEndVids,
+    ...allFeatureEndVidsMobileP,
+    ...allDotVids,
+    ...allDotVidsMobileP,
+    ...allDataZoomVids,
+    ...allDataZoomVidsMobileP,
+    ...allInstructionVids,
+    ...allInstructionVidsMobileP
+  ];
+  var ResetAndPauseAllVideos = function() {
+    allVideos.forEach(function(el) {
+      el.currentTime = 0;
+      el.pause();
+    });
+  };
+  var FlashBlackout = function(value) {
+    blackout.classList.remove("off");
+    setTimeout(function() {
+      blackout.classList.add("off");
+    }, value);
+  };
   navBar.addEventListener("click", function(e) {
     const clicked = e.target.closest(".nav_menu_link");
     if (!clicked) return;
@@ -216,38 +245,6 @@
         if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
     }
-  };
-  var ResetAndPauseAllVideos = function() {
-    allFeatureVids.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
-    allFeatureEndVids.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
-    allDotVids.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
-    allDotVidsMobileP.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
-    allDataZoomVids.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
-    allInstructionVids.forEach(function(el) {
-      el.currentTime = 0;
-      el.pause();
-    });
-  };
-  var FlashBlackout = function(value) {
-    blackout.classList.remove("off");
-    setTimeout(function() {
-      blackout.classList.add("off");
-    }, value);
   };
   blackout.classList.remove("off");
   document.querySelector(".nav_component").style.display = "none";
@@ -536,11 +533,10 @@
       el.classList.remove("active");
       if (el.classList.contains(value)) {
         el.classList.add("active");
-        el.querySelectorAll(".vid.datazoom").forEach(function(el2) {
-          setTimeout(function() {
-            el2.play();
-          }, PLAY_DATASHEET_VID_AFTER_DELAY);
-        });
+        setTimeout(function() {
+          el.querySelector(".vid.datazoom").play();
+          el.querySelector(".vid.datazoom-mobile-p").play();
+        }, PLAY_DATASHEET_VID_AFTER_DELAY);
       }
     });
     activeDataZoomComp = document.querySelector(
