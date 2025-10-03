@@ -1,3 +1,4 @@
+console.log("main");
 //....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;

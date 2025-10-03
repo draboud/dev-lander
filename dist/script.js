@@ -1,5 +1,6 @@
 (() => {
   // script.js
+  console.log("main");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 5e3;
   var DATASHEET_BUTTON_TIMER = 1500;
