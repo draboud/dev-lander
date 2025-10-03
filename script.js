@@ -1,3 +1,4 @@
+console.log("universal-ops");
 //....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;
