@@ -18,31 +18,29 @@
   );
   var allNavLinks = document.querySelectorAll(".nav_menu_link");
   var sectionFeatures = document.querySelector(".section_features");
-  var sectionMapDots = document.querySelector(".section_map-dots");
+  var sectionComponents = document.querySelector(".section_components");
   var sectionDatasheets = document.querySelector(".section_datasheets");
   var sectionInstructions = document.querySelector(".section_instructions");
   var allSections = [
     sectionFeatures,
-    sectionMapDots,
+    sectionComponents,
     sectionDatasheets,
     sectionInstructions
   ];
   var ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-  var allFeatureButtons = document.querySelectorAll(".feature-btn");
-  var allDotsButtons = document.querySelectorAll(".dots-btn");
-  var allDataZoomBtns = document.querySelectorAll(".datazoom-btn");
-  var allInstructionButtons = document.querySelectorAll(".instruction-btn");
+  var allFeatureButtons = document.querySelectorAll(".features-btn");
+  var allDotsButtons = document.querySelectorAll(".components-btn");
+  var allDataZoomBtns = document.querySelectorAll(".datasheets-btn");
+  var allInstructionButtons = document.querySelectorAll(".instructions-btn");
   var allCtrlButtons = [
     ...allFeatureButtons,
     ...allDotsButtons,
     ...allDataZoomBtns,
     ...allInstructionButtons
   ];
-  var allFeatureVidAllWrappers = document.querySelectorAll(".vid-all-wrapper");
-  var allFeatureVidContentWrappers = document.querySelectorAll(
-    ".vid-content-wrapper"
-  );
-  var allFeatureVidWrappers = document.querySelectorAll(".vid-wrapper");
+  var allFeatureAllWrappers = sectionFeatures.querySelectorAll(".all-wrapper");
+  var allFeatureTextWrappers = sectionFeatures.querySelectorAll(".text-wrapper");
+  var allFeatureVidWrappers = sectionFeatures.querySelectorAll(".video-wrapper");
   var allFeatureVids = document.querySelectorAll(".vid.feature");
   var allFeatureVidsMobileP = document.querySelectorAll(
     ".vid.feature-mobile-p"
@@ -61,11 +59,9 @@
   var allDatasheetButtons = document.querySelectorAll(".button-datasheet");
   var baseHeader = "Explode/Assemble";
   var baseText = "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
-  var allDotTopContentWrappers = document.querySelectorAll(
-    ".dots_wrap-top-wrapper"
-  );
+  var allComponentTextWrappers = sectionComponents.querySelectorAll(".text-wrapper");
   var allDots = document.querySelectorAll(".map_dot");
-  var allDotsAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+  var allComponentAllWrappers = sectionComponents.querySelectorAll(".all-wrapper");
   var dotVidExplode = document.querySelector(".vid.explode");
   var dotVidExplodeMobileP = document.querySelector(".vid.explode-mobile-p");
   var dotVidAssemble = document.querySelector(".vid.assemble");
@@ -73,9 +69,11 @@
   var allDotVids = [dotVidExplode, dotVidAssemble];
   var allDotVidsMobileP = [dotVidExplodeMobileP, dotVidAssembleMobileP];
   var allSectionVidsComponents = [...allDotVids, ...allDotVidsMobileP];
-  var dotExplodeButton = document.querySelector(".dots-btn.explode");
-  var dotAssembleButton = document.querySelector(".dots-btn.assemble");
-  var explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
+  var dotExplodeButton = document.querySelector(".components-btn.explode");
+  var dotAssembleButton = document.querySelector(".components-btn.assemble");
+  var explodeDotsWrapper = sectionComponents.querySelector(
+    ".all-wrapper.explode"
+  );
   var activeDotsWrap = explodeDotsWrapper;
   var dotsFlag;
   var datasheetButtonTimer;
@@ -83,16 +81,14 @@
   var compNumberString;
   var compContentActive = false;
   var blackout = document.querySelector(".blackout");
-  var dataZoomBackButton = document.querySelector(".datazoom-btn.back");
-  var datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
-  var allDataZoomWrappers = document.querySelectorAll(
-    ".datazooms-comp-wrapper"
-  );
+  var dataZoomBackButton = document.querySelector(".datasheets-btn.back");
+  var datasheetsAllWrapper = document.querySelector(".datasheets-grid");
+  var allDataZoomWrappers = document.querySelectorAll(".datasheet-all-wrapper");
   var allDataZoomContentWrappers = document.querySelectorAll(
     ".datazoom-content-wrapper"
   );
   var allDataZoomDimmers = document.querySelectorAll(".dimmer");
-  var allDataZoomImages = document.querySelectorAll(".datazoom-image");
+  var allDataZoomImages = document.querySelectorAll(".img");
   var allDataZoomVids = document.querySelectorAll(".vid.datazoom");
   var allDataZoomVidsMobileP = document.querySelectorAll(
     ".vid.datazoom-mobile-p"
@@ -109,12 +105,8 @@
   var activeDataZoomComp;
   var imageTextFlag = "text";
   var fromExplodeAssemble = false;
-  var allInstructionAllWrappers = document.querySelectorAll(
-    ".instruction-all-wrapper"
-  );
-  var instructionsContentWrapper = document.querySelector(
-    ".instructions-content-wrapper"
-  );
+  var allInstructionAllWrappers = sectionInstructions.querySelectorAll(".all-wrapper");
+  var instructionsContentWrapper = sectionInstructions.querySelector(".text-wrapper");
   var allInstructionVids = document.querySelectorAll(".vid.instruction");
   var allInstructionVidsMobileP = document.querySelectorAll(
     ".vid.instruction-mobile-p"
@@ -168,17 +160,17 @@
     switch (value) {
       case "features":
         ResetAndPauseAllVideos();
-        allFeatureVidAllWrappers.forEach(function(el) {
+        allFeatureAllWrappers.forEach(function(el) {
           el.classList.remove("active");
           if (el.classList.contains("rotation")) {
             el.classList.add("active");
             activeVidAllWrapper = el;
           }
         });
-        allFeatureVidContentWrappers.forEach(function(el) {
+        allFeatureTextWrappers.forEach(function(el) {
           el.classList.remove("active");
         });
-        activeVidAllWrapper.querySelector(".vid-content-wrapper").classList.add("active");
+        activeVidAllWrapper.querySelector(".text-wrapper").classList.add("active");
         allFeatureVids.forEach(function(el) {
           el.classList.remove("active");
           if (el.classList.contains("rotation")) el.classList.add("active");
@@ -201,18 +193,18 @@
         allDataZoomImages.forEach(function(el) {
           el.classList.remove("active");
         });
-        allDotsAllWrappers.forEach(function(el) {
+        allComponentAllWrappers.forEach(function(el) {
           el.classList.remove("active");
         });
         explodeDotsWrapper.classList.add("active");
         activeDotsWrap = explodeDotsWrapper;
-        activeDotsWrap.querySelector(".dots_wrap").classList.add("active");
+        activeDotsWrap.querySelector(".dots-wrapper").classList.add("active");
         dotsFlag = "";
-        explodeDotsWrapper.querySelector(".dots_wrap-top-wrapper").classList.add("active");
+        explodeDotsWrapper.querySelector(".text-wrapper").classList.add("active");
         dotAssembleButton.classList.remove("active");
         dotExplodeButton.classList.add("active");
         ctrlBtnWrapper.classList.add("active");
-        sectionMapDots.classList.add("active");
+        sectionComponents.classList.add("active");
         if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "datasheets":
@@ -226,11 +218,9 @@
         allDataZoomText.forEach((el) => el.classList.add("active"));
         allDataZoomWrappers.forEach(function(el) {
           el.classList.remove("active");
-          el.querySelector(".datazoom-content-wrapper").classList.remove(
-            "active"
-          );
+          el.querySelector(".text-wrapper").classList.remove("active");
           el.querySelector(".dimmer").classList.add("off");
-          el.querySelectorAll(".datazoom-image").forEach(
+          el.querySelectorAll(".img").forEach(
             (el2) => el2.classList.remove("active")
           );
         });
@@ -291,7 +281,7 @@
   });
   allFeatureVids.forEach(function(el) {
     el.addEventListener("ended", function() {
-      el.parentElement.parentElement.parentElement.querySelector(".vid-content-wrapper").classList.add("active");
+      el.parentElement.parentElement.parentElement.querySelector(".text-wrapper").classList.add("active");
       SetActiveEndVidAndPlay(vidFlag);
     });
   });
@@ -301,15 +291,15 @@
       el.classList.add("active");
     });
     activeVidAllWrapper = DeactivateAllActivateOne(
-      allFeatureVidAllWrappers,
+      allFeatureAllWrappers,
       "active",
       vidFlag2
     );
-    allFeatureVidContentWrappers.forEach(function(el) {
+    allFeatureTextWrappers.forEach(function(el) {
       el.classList.remove("active");
     });
     if (vidFlag2 === "rotation") {
-      activeVidAllWrapper.querySelector(".vid-content-wrapper").classList.add("active");
+      activeVidAllWrapper.querySelector(".text-wrapper").classList.add("active");
       return;
     }
     activeVidAllWrapper.querySelector(".vid.feature").play();
@@ -322,7 +312,7 @@
     });
   };
   var SetActiveEndVidAndPlay = function() {
-    activeVidAllWrapper.querySelectorAll(".vid-wrapper").forEach(function(el) {
+    activeVidAllWrapper.querySelectorAll(".video-wrapper").forEach(function(el) {
       el.classList.remove("active");
     });
     activeVidAllWrapper.querySelector(".vid.end").play();
@@ -346,7 +336,7 @@
       }, DATASHEET_BUTTON_TIMER);
     });
   });
-  allDotTopContentWrappers.forEach(function(el) {
+  allComponentTextWrappers.forEach(function(el) {
     el.addEventListener("mouseover", function() {
       clearTimeout(datasheetButtonTimer);
     });
@@ -391,7 +381,7 @@
     });
   });
   ctrlBtnWrapper.addEventListener("click", function(e) {
-    const clicked = e.target.closest(".dots-btn");
+    const clicked = e.target.closest(".components-btn");
     if (!clicked) return;
     allDotVids.forEach(function(el) {
       el.currentTime = 0;
@@ -400,7 +390,7 @@
       el.currentTime = 0;
     });
     dotsFlag = clicked.classList[1];
-    activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.remove("active");
+    activeDotsWrap.querySelector(".text-wrapper").classList.remove("active");
     ToggleDotsImage(activeDotsWrap, false);
     ResetTopWrapperContent(false);
     PlayActiveDotsVideo();
@@ -419,9 +409,9 @@
   };
   var FadeInTopWrapperContent = function() {
     if (!compContentActive) return;
-    activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.remove("active");
+    activeDotsWrap.querySelector(".text-wrapper").classList.remove("active");
     setTimeout(function() {
-      activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.add("active");
+      activeDotsWrap.querySelector(".text-wrapper").classList.add("active");
     }, FADE_IN_COMPONENTS_HEADING);
   };
   var ResetTopWrapperContent = function(fadeInTopWrapperBool) {
@@ -432,7 +422,7 @@
   };
   var SetActiveDotsWrapper = function(value) {
     dotsFlag = value;
-    allDotsAllWrappers.forEach(function(el) {
+    allComponentAllWrappers.forEach(function(el) {
       el.classList.remove("active");
       if (el.classList.contains(dotsFlag)) {
         el.classList.add("active");
@@ -441,7 +431,7 @@
     });
   };
   var ToggleDotsImage = function(activeImage, state) {
-    const allActiveDotsImages = activeImage.querySelectorAll(".dots_wrap");
+    const allActiveDotsImages = activeImage.querySelectorAll(".dots-wrapper");
     allActiveDotsImages.forEach(function(el) {
       state ? el.classList.add("active") : el.classList.remove("active");
     });
@@ -457,7 +447,7 @@
     compContentActive = false;
     datasheetsAllWrapper.classList.remove("active");
     sectionDatasheets.classList.add("active");
-    sectionMapDots.classList.remove("active");
+    sectionComponents.classList.remove("active");
     navLinkComponents.classList.remove("current");
     navLinkDatasheets.classList.add("current");
     ResetTopWrapperContent(false);
@@ -479,9 +469,9 @@
       allDataZoomText.forEach((el) => el.classList.add("active"));
       allDataZoomWrappers.forEach(function(el) {
         el.classList.remove("active");
-        el.querySelector(".datazoom-content-wrapper").classList.remove("active");
+        el.querySelector(".text-wrapper").classList.remove("active");
         el.querySelector(".dimmer").classList.add("off");
-        el.querySelectorAll(".datazoom-image").forEach(
+        el.querySelectorAll(".img").forEach(
           (el2) => el2.classList.remove("active")
         );
       });
@@ -513,8 +503,8 @@
   allDataZoomVids.forEach(function(el) {
     el.addEventListener("ended", function() {
       activeDataZoomComp.querySelector(".dimmer").classList.remove("off");
-      activeDataZoomComp.querySelectorAll(".datazoom-image").forEach((el2) => el2.classList.add("active"));
-      activeDataZoomComp.querySelector(".datazoom-content-wrapper").classList.add("active");
+      activeDataZoomComp.querySelectorAll(".img").forEach((el2) => el2.classList.add("active"));
+      activeDataZoomComp.querySelector(".text-wrapper").classList.add("active");
       ActivateDataZoomButons();
       ctrlBtnWrapper.classList.add("active");
     });
@@ -543,9 +533,11 @@
     sectionDatasheets.classList.remove("active");
     document.querySelector(".datazoom-btn.datasheets").click();
     FlashBlackout(FLASH_BLACKOUT);
-    document.querySelector(`.dots-all-wrapper.${explodeOrAssemble}`).querySelector(".dots_wrap").classList.add("active");
-    document.querySelector(`.dots-all-wrapper.${explodeOrAssemble}`).classList.add("active");
-    sectionMapDots.classList.add("active");
+    document;
+    sectionComponents.querySelector(`.all-wrapper.${explodeOrAssemble}`).querySelector(".dots-wrapper").classList.add("active");
+    document;
+    sectionComponents.querySelector(`.all-wrapper.${explodeOrAssemble}`).classList.add("active");
+    sectionComponents.classList.add("active");
     ActivateDotsButtons();
   };
   var ActivateDataZoomWrapper = function(value) {
@@ -564,7 +556,7 @@
       }
     });
     activeDataZoomComp = document.querySelector(
-      `.datazooms-comp-wrapper.${value}`
+      `.datasheet-all-wrapper.${value}`
     );
   };
   allClickDivs.forEach(function(el) {

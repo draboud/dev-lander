@@ -18,20 +18,20 @@ const navLinkInstructions = document.querySelector(
 );
 const allNavLinks = document.querySelectorAll(".nav_menu_link");
 const sectionFeatures = document.querySelector(".section_features");
-const sectionMapDots = document.querySelector(".section_map-dots");
+const sectionComponents = document.querySelector(".section_components");
 const sectionDatasheets = document.querySelector(".section_datasheets");
 const sectionInstructions = document.querySelector(".section_instructions");
 const allSections = [
   sectionFeatures,
-  sectionMapDots,
+  sectionComponents,
   sectionDatasheets,
   sectionInstructions,
 ];
 const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-const allFeatureButtons = document.querySelectorAll(".feature-btn");
-const allDotsButtons = document.querySelectorAll(".dots-btn");
-const allDataZoomBtns = document.querySelectorAll(".datazoom-btn");
-const allInstructionButtons = document.querySelectorAll(".instruction-btn");
+const allFeatureButtons = document.querySelectorAll(".features-btn");
+const allDotsButtons = document.querySelectorAll(".components-btn");
+const allDataZoomBtns = document.querySelectorAll(".datasheets-btn");
+const allInstructionButtons = document.querySelectorAll(".instructions-btn");
 const allCtrlButtons = [
   ...allFeatureButtons,
   ...allDotsButtons,
@@ -40,11 +40,11 @@ const allCtrlButtons = [
 ];
 //....................................................................
 //FEATURES DEFINITIONS
-const allFeatureVidAllWrappers = document.querySelectorAll(".vid-all-wrapper");
-const allFeatureVidContentWrappers = document.querySelectorAll(
-  ".vid-content-wrapper"
-);
-const allFeatureVidWrappers = document.querySelectorAll(".vid-wrapper");
+const allFeatureAllWrappers = sectionFeatures.querySelectorAll(".all-wrapper");
+const allFeatureTextWrappers =
+  sectionFeatures.querySelectorAll(".text-wrapper");
+const allFeatureVidWrappers =
+  sectionFeatures.querySelectorAll(".video-wrapper");
 const allFeatureVids = document.querySelectorAll(".vid.feature");
 const allFeatureVidsMobileP = document.querySelectorAll(
   ".vid.feature-mobile-p"
@@ -66,11 +66,11 @@ const allDatasheetButtons = document.querySelectorAll(".button-datasheet");
 const baseHeader = "Explode/Assemble";
 const baseText =
   "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
-const allDotTopContentWrappers = document.querySelectorAll(
-  ".dots_wrap-top-wrapper"
-);
+const allComponentTextWrappers =
+  sectionComponents.querySelectorAll(".text-wrapper");
 const allDots = document.querySelectorAll(".map_dot");
-const allDotsAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+const allComponentAllWrappers =
+  sectionComponents.querySelectorAll(".all-wrapper");
 const dotVidExplode = document.querySelector(".vid.explode");
 const dotVidExplodeMobileP = document.querySelector(".vid.explode-mobile-p");
 const dotVidAssemble = document.querySelector(".vid.assemble");
@@ -78,9 +78,11 @@ const dotVidAssembleMobileP = document.querySelector(".vid.assemble-mobile-p");
 const allDotVids = [dotVidExplode, dotVidAssemble];
 const allDotVidsMobileP = [dotVidExplodeMobileP, dotVidAssembleMobileP];
 const allSectionVidsComponents = [...allDotVids, ...allDotVidsMobileP];
-const dotExplodeButton = document.querySelector(".dots-btn.explode");
-const dotAssembleButton = document.querySelector(".dots-btn.assemble");
-const explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
+const dotExplodeButton = document.querySelector(".components-btn.explode");
+const dotAssembleButton = document.querySelector(".components-btn.assemble");
+const explodeDotsWrapper = sectionComponents.querySelector(
+  ".all-wrapper.explode"
+);
 let activeDotsWrap = explodeDotsWrapper;
 let dotsFlag;
 let datasheetButtonTimer;
@@ -90,16 +92,14 @@ let compContentActive = false;
 //....................................................................
 //DATASHEETS DEFINITIONS;
 const blackout = document.querySelector(".blackout");
-const dataZoomBackButton = document.querySelector(".datazoom-btn.back");
-const datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
-const allDataZoomWrappers = document.querySelectorAll(
-  ".datazooms-comp-wrapper"
-);
+const dataZoomBackButton = document.querySelector(".datasheets-btn.back");
+const datasheetsAllWrapper = document.querySelector(".datasheets-grid");
+const allDataZoomWrappers = document.querySelectorAll(".datasheet-all-wrapper");
 const allDataZoomContentWrappers = document.querySelectorAll(
   ".datazoom-content-wrapper"
 );
 const allDataZoomDimmers = document.querySelectorAll(".dimmer");
-const allDataZoomImages = document.querySelectorAll(".datazoom-image");
+const allDataZoomImages = document.querySelectorAll(".img");
 const allDataZoomVids = document.querySelectorAll(".vid.datazoom");
 const allDataZoomVidsMobileP = document.querySelectorAll(
   ".vid.datazoom-mobile-p"
@@ -119,12 +119,10 @@ let imageTextFlag = "text";
 let fromExplodeAssemble = false;
 //....................................................................
 //INSTRUCTIONS DEFINITIONS;
-const allInstructionAllWrappers = document.querySelectorAll(
-  ".instruction-all-wrapper"
-);
-const instructionsContentWrapper = document.querySelector(
-  ".instructions-content-wrapper"
-);
+const allInstructionAllWrappers =
+  sectionInstructions.querySelectorAll(".all-wrapper");
+const instructionsContentWrapper =
+  sectionInstructions.querySelector(".text-wrapper");
 const allInstructionVids = document.querySelectorAll(".vid.instruction");
 const allInstructionVidsMobileP = document.querySelectorAll(
   ".vid.instruction-mobile-p"
@@ -190,18 +188,18 @@ const ActivateSection = function (value) {
   switch (value) {
     case "features":
       ResetAndPauseAllVideos();
-      allFeatureVidAllWrappers.forEach(function (el) {
+      allFeatureAllWrappers.forEach(function (el) {
         el.classList.remove("active");
         if (el.classList.contains("rotation")) {
           el.classList.add("active");
           activeVidAllWrapper = el;
         }
       });
-      allFeatureVidContentWrappers.forEach(function (el) {
+      allFeatureTextWrappers.forEach(function (el) {
         el.classList.remove("active");
       });
       activeVidAllWrapper
-        .querySelector(".vid-content-wrapper")
+        .querySelector(".text-wrapper")
         .classList.add("active");
       allFeatureVids.forEach(function (el) {
         el.classList.remove("active");
@@ -225,20 +223,18 @@ const ActivateSection = function (value) {
       allDataZoomImages.forEach(function (el) {
         el.classList.remove("active");
       });
-      allDotsAllWrappers.forEach(function (el) {
+      allComponentAllWrappers.forEach(function (el) {
         el.classList.remove("active");
       });
       explodeDotsWrapper.classList.add("active");
       activeDotsWrap = explodeDotsWrapper;
-      activeDotsWrap.querySelector(".dots_wrap").classList.add("active");
+      activeDotsWrap.querySelector(".dots-wrapper").classList.add("active");
       dotsFlag = "";
-      explodeDotsWrapper
-        .querySelector(".dots_wrap-top-wrapper")
-        .classList.add("active");
+      explodeDotsWrapper.querySelector(".text-wrapper").classList.add("active");
       dotAssembleButton.classList.remove("active");
       dotExplodeButton.classList.add("active");
       ctrlBtnWrapper.classList.add("active");
-      sectionMapDots.classList.add("active");
+      sectionComponents.classList.add("active");
       if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
       break;
     case "datasheets":
@@ -252,11 +248,9 @@ const ActivateSection = function (value) {
       allDataZoomText.forEach((el) => el.classList.add("active"));
       allDataZoomWrappers.forEach(function (el) {
         el.classList.remove("active");
-        el.querySelector(".datazoom-content-wrapper").classList.remove(
-          "active"
-        );
+        el.querySelector(".text-wrapper").classList.remove("active");
         el.querySelector(".dimmer").classList.add("off");
-        el.querySelectorAll(".datazoom-image").forEach((el2) =>
+        el.querySelectorAll(".img").forEach((el2) =>
           el2.classList.remove("active")
         );
       });
@@ -308,13 +302,14 @@ const DeactivateAllActivateOne = function (deactivate, className, activate) {
   });
   return activatedValue;
 };
-// const PlaySectionVids = function (sectionVids) {
-//   sectionVids.forEach(function (el) {
-//     el.play();
-//   });
-// };
+const PlaySectionVids = function (sectionVids) {
+  sectionVids.forEach(function (el) {
+    el.play();
+  });
+};
 // let activated = DeactivateAllActivateOne(allFeatureButtons, "active", "second");
 // activated.style.backgroundColor = "grey";
+
 //....................................................................
 //FEATURES SECTION
 ctrlBtnWrapper.addEventListener("click", function (e) {
@@ -330,7 +325,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
 allFeatureVids.forEach(function (el) {
   el.addEventListener("ended", function () {
     el.parentElement.parentElement.parentElement
-      .querySelector(".vid-content-wrapper")
+      .querySelector(".text-wrapper")
       .classList.add("active");
     SetActiveEndVidAndPlay(vidFlag);
   });
@@ -341,18 +336,16 @@ const SetActiveVidAndPlay = function (vidFlag) {
     el.classList.add("active");
   });
   activeVidAllWrapper = DeactivateAllActivateOne(
-    allFeatureVidAllWrappers,
+    allFeatureAllWrappers,
     "active",
     vidFlag
   );
 
-  allFeatureVidContentWrappers.forEach(function (el) {
+  allFeatureTextWrappers.forEach(function (el) {
     el.classList.remove("active");
   });
   if (vidFlag === "rotation") {
-    activeVidAllWrapper
-      .querySelector(".vid-content-wrapper")
-      .classList.add("active");
+    activeVidAllWrapper.querySelector(".text-wrapper").classList.add("active");
     return;
   }
   // PlaySectionVids();
@@ -366,7 +359,7 @@ const RewindAndPauseAllFeatureVids = function () {
   });
 };
 const SetActiveEndVidAndPlay = function () {
-  activeVidAllWrapper.querySelectorAll(".vid-wrapper").forEach(function (el) {
+  activeVidAllWrapper.querySelectorAll(".video-wrapper").forEach(function (el) {
     el.classList.remove("active");
   });
   activeVidAllWrapper.querySelector(".vid.end").play();
@@ -394,7 +387,7 @@ allDots.forEach(function (el) {
     }, DATASHEET_BUTTON_TIMER);
   });
 });
-allDotTopContentWrappers.forEach(function (el) {
+allComponentTextWrappers.forEach(function (el) {
   el.addEventListener("mouseover", function () {
     clearTimeout(datasheetButtonTimer);
   });
@@ -440,7 +433,7 @@ allDatasheetButtons.forEach(function (el) {
   });
 });
 ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".dots-btn");
+  const clicked = e.target.closest(".components-btn");
   if (!clicked) return;
   allDotVids.forEach(function (el) {
     el.currentTime = 0;
@@ -449,9 +442,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     el.currentTime = 0;
   });
   dotsFlag = clicked.classList[1];
-  activeDotsWrap
-    .querySelector(".dots_wrap-top-wrapper")
-    .classList.remove("active");
+  activeDotsWrap.querySelector(".text-wrapper").classList.remove("active");
   ToggleDotsImage(activeDotsWrap, false);
   ResetTopWrapperContent(false);
   PlayActiveDotsVideo();
@@ -470,13 +461,9 @@ const ActivateDotsButtons = function () {
 };
 const FadeInTopWrapperContent = function () {
   if (!compContentActive) return;
-  activeDotsWrap
-    .querySelector(".dots_wrap-top-wrapper")
-    .classList.remove("active");
+  activeDotsWrap.querySelector(".text-wrapper").classList.remove("active");
   setTimeout(function () {
-    activeDotsWrap
-      .querySelector(".dots_wrap-top-wrapper")
-      .classList.add("active");
+    activeDotsWrap.querySelector(".text-wrapper").classList.add("active");
   }, FADE_IN_COMPONENTS_HEADING);
 };
 const ResetTopWrapperContent = function (fadeInTopWrapperBool) {
@@ -487,7 +474,7 @@ const ResetTopWrapperContent = function (fadeInTopWrapperBool) {
 };
 const SetActiveDotsWrapper = function (value) {
   dotsFlag = value;
-  allDotsAllWrappers.forEach(function (el) {
+  allComponentAllWrappers.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains(dotsFlag)) {
       el.classList.add("active");
@@ -496,7 +483,7 @@ const SetActiveDotsWrapper = function (value) {
   });
 };
 const ToggleDotsImage = function (activeImage, state) {
-  const allActiveDotsImages = activeImage.querySelectorAll(".dots_wrap");
+  const allActiveDotsImages = activeImage.querySelectorAll(".dots-wrapper");
   allActiveDotsImages.forEach(function (el) {
     state ? el.classList.add("active") : el.classList.remove("active");
   });
@@ -512,7 +499,7 @@ const OpenDataSheet = function (value) {
   compContentActive = false;
   datasheetsAllWrapper.classList.remove("active");
   sectionDatasheets.classList.add("active");
-  sectionMapDots.classList.remove("active");
+  sectionComponents.classList.remove("active");
   navLinkComponents.classList.remove("current");
   navLinkDatasheets.classList.add("current");
   ResetTopWrapperContent(false);
@@ -536,9 +523,9 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     allDataZoomText.forEach((el) => el.classList.add("active"));
     allDataZoomWrappers.forEach(function (el) {
       el.classList.remove("active");
-      el.querySelector(".datazoom-content-wrapper").classList.remove("active");
+      el.querySelector(".text-wrapper").classList.remove("active");
       el.querySelector(".dimmer").classList.add("off");
-      el.querySelectorAll(".datazoom-image").forEach((el2) =>
+      el.querySelectorAll(".img").forEach((el2) =>
         el2.classList.remove("active")
       );
     });
@@ -571,11 +558,9 @@ allDataZoomVids.forEach(function (el) {
   el.addEventListener("ended", function () {
     activeDataZoomComp.querySelector(".dimmer").classList.remove("off");
     activeDataZoomComp
-      .querySelectorAll(".datazoom-image")
+      .querySelectorAll(".img")
       .forEach((el2) => el2.classList.add("active"));
-    activeDataZoomComp
-      .querySelector(".datazoom-content-wrapper")
-      .classList.add("active");
+    activeDataZoomComp.querySelector(".text-wrapper").classList.add("active");
     ActivateDataZoomButons();
     ctrlBtnWrapper.classList.add("active");
   });
@@ -616,14 +601,16 @@ const ReturnToExplodeAssemble = function () {
   sectionDatasheets.classList.remove("active");
   document.querySelector(".datazoom-btn.datasheets").click();
   FlashBlackout(FLASH_BLACKOUT);
-  document
-    .querySelector(`.dots-all-wrapper.${explodeOrAssemble}`)
-    .querySelector(".dots_wrap")
+  document;
+  sectionComponents
+    .querySelector(`.all-wrapper.${explodeOrAssemble}`)
+    .querySelector(".dots-wrapper")
     .classList.add("active");
-  document
-    .querySelector(`.dots-all-wrapper.${explodeOrAssemble}`)
+  document;
+  sectionComponents
+    .querySelector(`.all-wrapper.${explodeOrAssemble}`)
     .classList.add("active");
-  sectionMapDots.classList.add("active");
+  sectionComponents.classList.add("active");
   ActivateDotsButtons();
 };
 const ActivateDataZoomWrapper = function (value) {
@@ -642,7 +629,7 @@ const ActivateDataZoomWrapper = function (value) {
     }
   });
   activeDataZoomComp = document.querySelector(
-    `.datazooms-comp-wrapper.${value}`
+    `.datasheet-all-wrapper.${value}`
   );
 };
 //....................................................................
