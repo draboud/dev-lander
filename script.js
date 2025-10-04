@@ -1,5 +1,37 @@
 console.log("universal-ops");
 //....................................................................
+//CONSTRUCTION ZONE
+// const selectAnIndex = function (selectedIndex) {
+//   console.log(selectedIndex);
+//   myArray.forEach(function (el, index) {
+//     console.log(el);
+//     if (el === selectedIndex) console.log(index);
+//   });
+//   // console.log(myArray[selectedIndex]);
+// };
+// const myArray = ["first", "second", "third"];
+// selectAnIndex(myArray[1]);
+
+//....................................................................
+const DeactivateAllActivateOne = function (deactivate, className, activate) {
+  let activatedValue;
+  deactivate.forEach(function (el) {
+    el.classList.remove(className);
+    if (el.classList.contains(activate)) {
+      el.classList.add(className);
+      activatedValue = el;
+    }
+  });
+  return activatedValue;
+};
+const PlaySectionVids = function (sectionVids) {
+  sectionVids.forEach(function (el) {
+    el.play();
+  });
+};
+// let activated = DeactivateAllActivateOne(allFeatureButtons, "active", "second");
+// activated.style.backgroundColor = "grey";
+//....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;
 const FEATURE_MAIN_VID_REPLAY = 5000;
@@ -30,76 +62,79 @@ const allSections = [
   sectionInstructions,
 ];
 const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-const allFeaturesButtons = document.querySelectorAll(".features-btn");
-const allComponentsButtons = document.querySelectorAll(".components-btn");
-const allDatasheetsBtns = document.querySelectorAll(".datasheets-btn");
-const allInstructionsButtons = document.querySelectorAll(".instructions-btn");
+const allButtonsFeatures = document.querySelectorAll(".features-btn");
+const allButtonsComponents = document.querySelectorAll(".components-btn");
+const allButtonsDatasheets = document.querySelectorAll(".datasheets-btn");
+const allButtonsInstructions = document.querySelectorAll(".instructions-btn");
 const allCtrlButtons = [
-  ...allFeaturesButtons,
-  ...allComponentsButtons,
-  ...allDatasheetsBtns,
-  ...allInstructionsButtons,
+  ...allButtonsFeatures,
+  ...allButtonsComponents,
+  ...allButtonsDatasheets,
+  ...allButtonsInstructions,
 ];
 //....................................................................
 //FEATURES DEFINITIONS
-const allFeatureAllWrappers = sectionFeatures.querySelectorAll(".all-wrapper");
-const allFeatureTextWrappers =
+const allFullWrappersFeatures =
+  sectionFeatures.querySelectorAll(".full-wrapper");
+const allTextWrappersFeatures =
   sectionFeatures.querySelectorAll(".text-wrapper");
-const allFeatureVidWrappers =
+const allVidWrappersFeatures =
   sectionFeatures.querySelectorAll(".video-wrapper");
-const allFeatureVids = document.querySelectorAll(".vid.feature");
-const allFeatureVidsMobileP = document.querySelectorAll(
+const allVidsFeatures = document.querySelectorAll(".vid.feature");
+const allVidsFeaturesMobileP = document.querySelectorAll(
   ".vid.feature-mobile-p"
 );
-const allFeatureEndVids = document.querySelectorAll(".vid.end");
-const allFeatureEndVidsMobileP = document.querySelectorAll(".vid.end-mobile-p");
+const allEndVidsFeatures = document.querySelectorAll(".vid.feature-end");
+const allEndVidsFeaturesMobileP = document.querySelectorAll(
+  ".feature-end-mobile-p"
+);
 const allSectionVidsFeatures = [
-  ...allFeatureVids,
-  ...allFeatureVidsMobileP,
-  ...allFeatureEndVids,
-  ...allFeatureEndVidsMobileP,
+  ...allVidsFeatures,
+  ...allVidsFeaturesMobileP,
+  ...allEndVidsFeatures,
+  ...allEndVidsFeaturesMobileP,
 ];
 let activeVidAllWrapper;
 let vidFlag;
 let newTimer;
 //....................................................................
 //COMPONENTS DEFINITIONS
-const allDatasheetButtons = document.querySelectorAll(".button-datasheet");
-const mainComponentHeader = "Explode/Assemble";
-const mainComponentText =
+const allButtonsDatalinks = document.querySelectorAll(".button-datalink");
+const componentHeaderMain = "Explode/Assemble";
+const componentTextMain =
   "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
-const allComponentTextWrappers =
+const allTextWrappersComponents =
   sectionComponents.querySelectorAll(".text-wrapper");
-const allDots = document.querySelectorAll(".map_dot");
-const allComponentAllWrappers =
-  sectionComponents.querySelectorAll(".all-wrapper");
-const componentVidExplode = document.querySelector(".vid.explode");
-const componentVidExplodeMobileP = document.querySelector(
-  ".vid.explode-mobile-p"
+const allDotsComponents = document.querySelectorAll(".map_dot");
+const allFullWrappersComponents =
+  sectionComponents.querySelectorAll(".full-wrapper");
+const vidComponentsExplode = document.querySelector(".vid.comp-explode");
+const vidComponentsExplodeMobileP = document.querySelector(
+  ".vid.comp-explode-mobile-p"
 );
-const componentVidAssemble = document.querySelector(".vid.assemble");
-const componentVidAssembleMobileP = document.querySelector(
-  ".vid.assemble-mobile-p"
+const vidComponentsAssemble = document.querySelector(".vid.comp-assemble");
+const vidComponentsAssembleMobileP = document.querySelector(
+  ".vid.comp-assemble-mobile-p"
 );
-const allComponentVids = [componentVidExplode, componentVidAssemble];
-const allComponentVidsMobileP = [
-  componentVidExplodeMobileP,
-  componentVidAssembleMobileP,
+const allVidsComponents = [vidComponentsExplode, vidComponentsAssemble];
+const allVidsComponentsMobileP = [
+  vidComponentsExplodeMobileP,
+  vidComponentsAssembleMobileP,
 ];
 const allSectionVidsComponents = [
-  ...allComponentVids,
-  ...allComponentVidsMobileP,
+  ...allVidsComponents,
+  ...allVidsComponentsMobileP,
 ];
-const componentsExplodeButton = document.querySelector(
+const buttonComponentsExplode = document.querySelector(
   ".components-btn.explode"
 );
-const componentAssembleButton = document.querySelector(
+const buttonComponentsAssemble = document.querySelector(
   ".components-btn.assemble"
 );
-const allWrapperExplode = sectionComponents.querySelector(
-  ".all-wrapper.explode"
+const fullWrapperExplode = sectionComponents.querySelector(
+  ".full-wrapper.explode"
 );
-let activeComponentsWrap = allWrapperExplode;
+let activeComponentsWrap = fullWrapperExplode;
 let dotsFlag;
 let datasheetButtonTimer;
 let explodeOrAssemble;
@@ -108,20 +143,24 @@ let compContentActive = false;
 //....................................................................
 //DATASHEETS DEFINITIONS;
 const blackout = document.querySelector(".blackout");
-const datasheetsBackButton = document.querySelector(".datasheets-btn.back");
-const datasheetsAllWrapper = document.querySelector(".datasheets-grid");
-const allDatasheetWrappers = document.querySelectorAll(
-  ".datasheet-all-wrapper"
+const buttonDatasheetsBack = document.querySelector(".datasheets-btn.back");
+const gridDatasheets = document.querySelector(".datasheets-grid");
+
+//....................................................................
+const allFullWrappersDatasheets = document.querySelectorAll(
+  ".full-wrapper.datasheet"
 );
-const allDatasheetVids = document.querySelectorAll(".vid.datazoom");
-const allDatasheetVidsMobileP = document.querySelectorAll(
-  ".vid.datazoom-mobile-p"
+//....................................................................
+
+const allVidsDatasheets = document.querySelectorAll(".vid.datasheet");
+const allVidsDatasheetsMobileP = document.querySelectorAll(
+  ".vid.datasheet-mobile-p"
 );
 const allSectionVidsDatasheets = [
-  ...allDatasheetVids,
-  ...allDatasheetVidsMobileP,
+  ...allVidsDatasheets,
+  ...allVidsDatasheetsMobileP,
 ];
-const allTextImageButtons = document.querySelectorAll(".text-image-btn");
+const allButtonsTextImage = document.querySelectorAll(".text-image-btn");
 const allDatasheetSubHeadings = document.querySelectorAll(
   ".datasheet-subheading"
 );
@@ -132,21 +171,21 @@ let imageTextFlag = "text";
 let fromExplodeAssemble = false;
 //....................................................................
 //INSTRUCTIONS DEFINITIONS;
-const allInstructionAllWrappers =
-  sectionInstructions.querySelectorAll(".all-wrapper");
-const instructionsTextWrapper =
+const allFullWrappersInstructions =
+  sectionInstructions.querySelectorAll(".full-wrapper");
+const textWrapperInstructions =
   sectionInstructions.querySelector(".text-wrapper");
-const allInstructionVids = document.querySelectorAll(".vid.instruction");
-const allInstructionVidsMobileP = document.querySelectorAll(
+const allVidsInstructions = document.querySelectorAll(".vid.instruction");
+const allVidsInstructionsMobileP = document.querySelectorAll(
   ".vid.instruction-mobile-p"
 );
 const allSectionVidsInstructions = [
-  ...allInstructionVids,
-  ...allInstructionVidsMobileP,
+  ...allVidsInstructions,
+  ...allVidsInstructionsMobileP,
 ];
 const allClickDivs = document.querySelectorAll(".click-div");
 const pauseWrapper = document.querySelector(".pause-wrapper");
-let ActiveInstructionAllWrapper;
+let ActiveFullWrapperInstructions;
 let currentVid = 1;
 let instructionVidTimer;
 let pauseFlag = false;
@@ -161,11 +200,43 @@ const allVideos = [
 ];
 //....................................................................
 //UNIVERSAL FUNCTIONS
-const ResetAndPauseAllVideos = function () {
+const DeactivateAllSections = function () {
+  allSections.forEach(function (el) {
+    el.classList.remove("active");
+  });
+};
+const DeactivateAllButtons = function () {
+  allCtrlButtons.forEach(function (el) {
+    el.classList.remove("active");
+  });
+};
+const ResetAllVideos = function () {
   allVideos.forEach(function (el) {
     el.currentTime = 0;
-    el.pause();
+    if (el.classList.contains("end")) el.pause();
   });
+};
+const SetSectionText = function (activeSection) {
+  const sectionFlag = activeSection.classList[0].slice(8);
+  activeSection.querySelectorAll(".text-wrapper").forEach(function (el) {
+    el.classList.remove("active");
+  });
+  switch (sectionFlag) {
+    case "features":
+      activeSection
+        .querySelector(".full-wrapper.main")
+        .querySelector(".text-wrapper")
+        .classList.add("active");
+      break;
+    case "components":
+      activeSection
+        .querySelector(".full-wrapper.explode")
+        .querySelector(".text-wrapper")
+        .classList.add("active");
+      break;
+    // case "datasheets":
+    //   activeSection.querySelector(".full-wrapper.comp");
+  }
 };
 const FlashStartBlackout = function () {
   blackout.classList.remove("off");
@@ -187,38 +258,43 @@ navBar.addEventListener("click", function (e) {
   const activeSectionFlag = clicked.classList[1];
   ActivateSection(activeSectionFlag);
 });
-const ActivateSection = function (value) {
+const ActivateSection = function (activeSectionFlag) {
   allNavLinks.forEach(function (el) {
     el.classList.remove("current");
-    if (el.classList.contains(value)) el.classList.add("current");
+    if (el.classList.contains(activeSectionFlag)) el.classList.add("current");
   });
-  allSections.forEach(function (el) {
-    el.classList.remove("active");
-  });
-  allCtrlButtons.forEach(function (el) {
-    el.classList.remove("active");
-  });
-  switch (value) {
+  const activeSection = document.querySelector(`.section_${activeSectionFlag}`);
+  //deactivate all sections
+  //deactivate all buttons
+  //reset and pause all vids
+  //set section text
+  //set section special elements
+  //flash blackout
+  //activate section
+  DeactivateAllSections();
+  DeactivateAllButtons();
+  ResetAllVideos();
+  SetSectionText(activeSection);
+  switch (activeSectionFlag) {
     case "features":
-      ResetAndPauseAllVideos();
-      allFeatureAllWrappers.forEach(function (el) {
-        el.classList.remove("active");
-        if (el.classList.contains("main")) {
-          el.classList.add("active");
-          activeVidAllWrapper = el;
-        }
-      });
-      allFeatureTextWrappers.forEach(function (el) {
-        el.classList.remove("active");
-      });
-      activeVidAllWrapper
-        .querySelector(".text-wrapper")
-        .classList.add("active");
-      allFeatureVids.forEach(function (el) {
-        el.classList.remove("active");
-        if (el.classList.contains("main")) el.classList.add("active");
-      });
-      allFeaturesButtons.forEach(function (el) {
+      // allFullWrappersFeatures.forEach(function (el) {
+      //   el.classList.remove("active");
+      //   if (el.classList.contains("main")) {
+      //     el.classList.add("active");
+      //     activeVidAllWrapper = el;
+      //   }
+      // });
+      // allTextWrappersFeatures.forEach(function (el) {
+      //   el.classList.remove("active");
+      // });
+      // activeVidAllWrapper
+      //   .querySelector(".text-wrapper")
+      //   .classList.add("active");
+      // allVidsFeatures.forEach(function (el) {
+      //   el.classList.remove("active");
+      //   if (el.classList.contains("main")) el.classList.add("active");
+      // });
+      allButtonsFeatures.forEach(function (el) {
         el.classList.add("active");
       });
       ctrlBtnWrapper.classList.add("active");
@@ -226,33 +302,33 @@ const ActivateSection = function (value) {
       if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
       break;
     case "components":
-      ResetAndPauseAllVideos();
-      allComponentAllWrappers.forEach(function (el) {
+      // ResetAllVideos();
+      allFullWrappersComponents.forEach(function (el) {
         el.classList.remove("active");
       });
-      allWrapperExplode.classList.add("active");
-      activeComponentsWrap = allWrapperExplode;
+      fullWrapperExplode.classList.add("active");
+      activeComponentsWrap = fullWrapperExplode;
       activeComponentsWrap
         .querySelector(".dots-wrapper")
         .classList.add("active");
       dotsFlag = "";
-      allWrapperExplode.querySelector(".text-wrapper").classList.add("active");
-      componentAssembleButton.classList.remove("active");
-      componentsExplodeButton.classList.add("active");
+      // fullWrapperExplode.querySelector(".text-wrapper").classList.add("active");
+      buttonComponentsAssemble.classList.remove("active");
+      buttonComponentsExplode.classList.add("active");
       ctrlBtnWrapper.classList.add("active");
       sectionComponents.classList.add("active");
       if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
       break;
     case "datasheets":
-      ResetAndPauseAllVideos();
-      datasheetsBackButton.classList.remove("active");
+      ResetAllVideos();
+      buttonDatasheetsBack.classList.remove("active");
       imageTextFlag = "text";
-      allTextImageButtons.forEach(
+      allButtonsTextImage.forEach(
         (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
       );
       allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
       allDatasheetText.forEach((el) => el.classList.add("active"));
-      allDatasheetWrappers.forEach(function (el) {
+      allFullWrappersDatasheets.forEach(function (el) {
         el.classList.remove("active");
         el.querySelector(".text-wrapper").classList.remove("active");
         el.querySelector(".dimmer").classList.add("off");
@@ -260,9 +336,9 @@ const ActivateSection = function (value) {
           el2.classList.remove("active")
         );
       });
-      datasheetsAllWrapper.style.display = "grid";
+      gridDatasheets.style.display = "grid";
       setTimeout(function () {
-        datasheetsAllWrapper.classList.add("active");
+        gridDatasheets.classList.add("active");
       }, FADE_IN_DATASHEETS_GRID);
       fromExplodeAssemble = false;
       ctrlBtnWrapper.classList.remove("active");
@@ -270,12 +346,12 @@ const ActivateSection = function (value) {
       if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
       break;
     case "instructions":
-      ResetToMainScreen();
-      allInstructionsButtons.forEach(function (el) {
+      ResetToInstructionsMainScreen();
+      allButtonsInstructions.forEach(function (el) {
         el.classList.add("active");
       });
       ctrlBtnWrapper.classList.add("active");
-      ResetAndPauseAllVideos();
+      ResetAllVideos();
       sectionInstructions.classList.add("active");
       if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
       break;
@@ -296,27 +372,6 @@ window.addEventListener("load", function () {
   }, FLASH_START_BLACKOUT);
 });
 //....................................................................
-//CONSTRUCTION ZONE
-const DeactivateAllActivateOne = function (deactivate, className, activate) {
-  let activatedValue;
-  deactivate.forEach(function (el) {
-    el.classList.remove(className);
-    if (el.classList.contains(activate)) {
-      el.classList.add(className);
-      activatedValue = el;
-    }
-  });
-  return activatedValue;
-};
-const PlaySectionVids = function (sectionVids) {
-  sectionVids.forEach(function (el) {
-    el.play();
-  });
-};
-// let activated = DeactivateAllActivateOne(allFeatureButtons, "active", "second");
-// activated.style.backgroundColor = "grey";
-
-//....................................................................
 //FEATURES SECTION
 ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".features-btn");
@@ -328,7 +383,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   }, FEATURE_MAIN_VID_REPLAY);
   SetActiveVidAndPlay(vidFlag);
 });
-allFeatureVids.forEach(function (el) {
+allVidsFeatures.forEach(function (el) {
   el.addEventListener("ended", function () {
     el.parentElement.parentElement.parentElement
       .querySelector(".text-wrapper")
@@ -338,16 +393,16 @@ allFeatureVids.forEach(function (el) {
 });
 const SetActiveVidAndPlay = function (vidFlag) {
   RewindAndPauseAllFeatureVids();
-  allFeatureVidWrappers.forEach(function (el) {
+  allVidWrappersFeatures.forEach(function (el) {
     el.classList.add("active");
   });
   activeVidAllWrapper = DeactivateAllActivateOne(
-    allFeatureAllWrappers,
+    allFullWrappersFeatures,
     "active",
     vidFlag
   );
 
-  allFeatureTextWrappers.forEach(function (el) {
+  allTextWrappersFeatures.forEach(function (el) {
     el.classList.remove("active");
   });
   if (vidFlag === "main") {
@@ -368,21 +423,21 @@ const SetActiveEndVidAndPlay = function () {
   activeVidAllWrapper.querySelectorAll(".video-wrapper").forEach(function (el) {
     el.classList.remove("active");
   });
-  activeVidAllWrapper.querySelector(".vid.end").play();
-  activeVidAllWrapper.querySelector(".vid.end-mobile-p").play();
+  activeVidAllWrapper.querySelector(".vid.feature-end").play();
+  activeVidAllWrapper.querySelector(".vid.feature-end-mobile-p").play();
 };
 //....................................................................
 //COMPONENTS SECTION
-allDots.forEach(function (el) {
+allDotsComponents.forEach(function (el) {
   el.addEventListener("click", function () {
     compContentActive = true;
-    FadeInTopWrapperContent();
-    activeComponentsWrap.querySelector(".heading-style-h2").innerHTML =
+    FadeInTextWrapperContent();
+    activeComponentsWrap.querySelector(".heading-generic").innerHTML =
       el.querySelector(".map_dot-name").innerHTML;
-    activeComponentsWrap.querySelector(".text-size-regular").innerHTML =
+    activeComponentsWrap.querySelector(".text-generic").innerHTML =
       el.querySelector(".map_dot-description").innerHTML;
     activeComponentsWrap
-      .querySelector(".button-datasheet")
+      .querySelector(".button-datalink")
       .classList.add("active");
   });
   el.addEventListener("mouseover", function () {
@@ -390,86 +445,86 @@ allDots.forEach(function (el) {
   });
   el.addEventListener("mouseout", function () {
     datasheetButtonTimer = setTimeout(function () {
-      ResetTopWrapperContent(true);
+      ResetTextWrapperContent(true);
       compContentActive = false;
     }, DATASHEET_BUTTON_TIMER);
   });
 });
-allComponentTextWrappers.forEach(function (el) {
+allTextWrappersComponents.forEach(function (el) {
   el.addEventListener("mouseover", function () {
     clearTimeout(datasheetButtonTimer);
   });
   el.addEventListener("mouseout", function () {
     datasheetButtonTimer = setTimeout(function () {
-      ResetTopWrapperContent(true);
+      ResetTextWrapperContent(true);
       compContentActive = false;
     }, DATASHEET_BUTTON_TIMER);
   });
 });
-allComponentVids.forEach(function (el) {
+allVidsComponents.forEach(function (el) {
   el.addEventListener("ended", function () {
     const pastActiveComponentsWrap = activeComponentsWrap;
     if (activeComponentsWrap.classList.contains("explode")) {
-      SetActiveDotsWrapper("assemble");
+      SetActiveComponentsWrapper("assemble");
     } else {
-      SetActiveDotsWrapper("explode");
+      SetActiveComponentsWrapper("explode");
     }
-    ToggleDotsImage(pastActiveComponentsWrap, true);
-    allComponentsButtons.forEach(function (el) {
+    ToggleComponentsImage(pastActiveComponentsWrap, true);
+    allButtonsComponents.forEach(function (el) {
       el.classList.remove("active");
       if (el.classList.contains(dotsFlag)) {
         el.classList.add("active");
       }
     });
-    ToggleDotsImage(activeComponentsWrap, true);
+    ToggleComponentsImage(activeComponentsWrap, true);
     compContentActive = true;
-    FadeInTopWrapperContent();
+    FadeInTextWrapperContent();
     compContentActive = false;
   });
 });
-allDatasheetButtons.forEach(function (el) {
+allButtonsDatalinks.forEach(function (el) {
   el.addEventListener("click", function () {
     explodeOrAssemble = el.parentElement.parentElement.classList[1];
     const compNumber =
-      el.parentElement.querySelector(".heading-style-h2").innerHTML;
+      el.parentElement.querySelector(".heading-generic").innerHTML;
     if (compNumber.length > 11) {
       compNumberString = `comp-${compNumber.slice(-2)}`;
     } else {
       compNumberString = `comp-${compNumber[compNumber.length - 1]}`;
     }
-    OpenDataSheet(compNumberString, explodeOrAssemble);
+    OpenDatasheet(compNumberString, explodeOrAssemble);
   });
 });
 ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".components-btn");
   if (!clicked) return;
-  allComponentVids.forEach(function (el) {
+  allVidsComponents.forEach(function (el) {
     el.currentTime = 0;
   });
-  allComponentVidsMobileP.forEach(function (el) {
+  allVidsComponentsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
   dotsFlag = clicked.classList[1];
   activeComponentsWrap
     .querySelector(".text-wrapper")
     .classList.remove("active");
-  ToggleDotsImage(activeComponentsWrap, false);
-  ResetTopWrapperContent(false);
-  PlayActiveDotsVideo();
+  ToggleComponentsImage(activeComponentsWrap, false);
+  ResetTextWrapperContent(false);
+  PlayActiveComponentsVideo();
 });
-const ActivateDotsButtons = function () {
-  allDatasheetButtons.forEach(function (el) {
+const ActivateButtonsComponents = function () {
+  allButtonsDatasheets.forEach(function (el) {
     el.classList.remove("active");
   });
-  allComponentsButtons.forEach(function (el) {
+  allButtonsComponents.forEach(function (el) {
     el.classList.add("active");
   });
   if (activeComponentsWrap.classList.contains("explode")) {
-    componentAssembleButton.classList.remove("active");
-  } else componentsExplodeButton.classList.remove("active");
+    buttonComponentsAssemble.classList.remove("active");
+  } else buttonComponentsExplode.classList.remove("active");
   ctrlBtnWrapper.classList.add("active");
 };
-const FadeInTopWrapperContent = function () {
+const FadeInTextWrapperContent = function () {
   if (!compContentActive) return;
   activeComponentsWrap
     .querySelector(".text-wrapper")
@@ -478,19 +533,19 @@ const FadeInTopWrapperContent = function () {
     activeComponentsWrap.querySelector(".text-wrapper").classList.add("active");
   }, FADE_IN_COMPONENTS_HEADING);
 };
-const ResetTopWrapperContent = function (fadeInTopWrapperBool) {
-  if (fadeInTopWrapperBool) FadeInTopWrapperContent();
-  activeComponentsWrap.querySelector(".heading-style-h2").innerHTML =
-    mainComponentHeader;
-  activeComponentsWrap.querySelector(".text-size-regular").innerHTML =
-    mainComponentText;
+const ResetTextWrapperContent = function (fadeInTopWrapperBool) {
+  if (fadeInTopWrapperBool) FadeInTextWrapperContent();
+  activeComponentsWrap.querySelector(".heading-generic").innerHTML =
+    componentHeaderMain;
+  activeComponentsWrap.querySelector(".text-generic").innerHTML =
+    componentTextMain;
   activeComponentsWrap
-    .querySelector(".button-datasheet")
+    .querySelector(".button-datalink")
     .classList.remove("active");
 };
-const SetActiveDotsWrapper = function (value) {
+const SetActiveComponentsWrapper = function (value) {
   dotsFlag = value;
-  allComponentAllWrappers.forEach(function (el) {
+  allFullWrappersComponents.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains(dotsFlag)) {
       el.classList.add("active");
@@ -498,27 +553,27 @@ const SetActiveDotsWrapper = function (value) {
     }
   });
 };
-const ToggleDotsImage = function (activeImage, state) {
+const ToggleComponentsImage = function (activeImage, state) {
   const allActiveDotsImages = activeImage.querySelectorAll(".dots-wrapper");
   allActiveDotsImages.forEach(function (el) {
     state ? el.classList.add("active") : el.classList.remove("active");
   });
 };
-const PlayActiveDotsVideo = function () {
+const PlayActiveComponentsVideo = function () {
   const vidArray = [
-    document.querySelector(`.vid.${dotsFlag}`),
-    document.querySelector(`.vid.${dotsFlag}-mobile-p`),
+    document.querySelector(`.vid.comp-${dotsFlag}`),
+    document.querySelector(`.vid.comp-${dotsFlag}-mobile-p`),
   ];
   vidArray.forEach((el) => el.play());
 };
-const OpenDataSheet = function (value) {
+const OpenDatasheet = function (value) {
   compContentActive = false;
-  datasheetsAllWrapper.classList.remove("active");
+  gridDatasheets.classList.remove("active");
   sectionDatasheets.classList.add("active");
   sectionComponents.classList.remove("active");
   navLinkComponents.classList.remove("current");
   navLinkDatasheets.classList.add("current");
-  ResetTopWrapperContent(false);
+  ResetTextWrapperContent(false);
   fromExplodeAssemble = true;
   document.querySelector(`.datasheet-card-wrapper.${value}`).click();
 };
@@ -528,16 +583,16 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".datasheets-btn");
   if (!clicked) return;
   if (clicked.classList.contains("back")) {
-    ReturnToExplodeAssemble();
+    ReturnToComponentsSection();
   } else {
-    datasheetsBackButton.classList.remove("active");
+    buttonDatasheetsBack.classList.remove("active");
     imageTextFlag = "text";
-    allTextImageButtons.forEach(
+    allButtonsTextImage.forEach(
       (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
     );
     allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
     allDatasheetText.forEach((el) => el.classList.add("active"));
-    allDatasheetWrappers.forEach(function (el) {
+    allFullWrappersDatasheets.forEach(function (el) {
       el.classList.remove("active");
       el.querySelector(".text-wrapper").classList.remove("active");
       el.querySelector(".dimmer").classList.add("off");
@@ -545,43 +600,51 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
         el2.classList.remove("active")
       );
     });
-    allDatasheetVids.forEach(function (el) {
+    allVidsDatasheets.forEach(function (el) {
       el.currentTime = 0;
     });
-    allDatasheetVidsMobileP.forEach(function (el) {
+    allVidsDatasheetsMobileP.forEach(function (el) {
       el.currentTime = 0;
     });
-    datasheetsAllWrapper.style.display = "grid";
+    gridDatasheets.style.display = "grid";
     setTimeout(function () {
-      datasheetsAllWrapper.classList.add("active");
+      gridDatasheets.classList.add("active");
     }, FADE_IN_DATASHEETS_GRID);
     fromExplodeAssemble = false;
     ctrlBtnWrapper.classList.remove("active");
   }
 });
-datasheetsAllWrapper.addEventListener("click", function (e) {
+gridDatasheets.addEventListener("click", function (e) {
   const clicked = e.target.closest(".datasheet-card-wrapper");
+  let datasheetIndex;
   if (!clicked) return;
-  allDatasheetVids.forEach(function (el) {
+  allVidsDatasheets.forEach(function (el) {
     el.currentTime = 0;
   });
-  allDatasheetVidsMobileP.forEach(function (el) {
+  allVidsDatasheetsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
-  ActivateDataZoomWrapper(clicked.classList[1]);
+  gridDatasheets
+    .querySelectorAll(".datasheet-card-wrapper")
+    .forEach(function (el, index) {
+      if (el.classList[1] === clicked.classList[1]) {
+        datasheetIndex = index;
+      }
+    });
+  ActivateFullWrapperDatasheets(datasheetIndex);
 });
-allDatasheetVids.forEach(function (el) {
+allVidsDatasheets.forEach(function (el) {
   el.addEventListener("ended", function () {
     activeDatasheetComp.querySelector(".dimmer").classList.remove("off");
     activeDatasheetComp
       .querySelectorAll(".img")
       .forEach((el2) => el2.classList.add("active"));
     activeDatasheetComp.querySelector(".text-wrapper").classList.add("active");
-    ActivateDataZoomButons();
+    ActivateButtonsDatasheets();
     ctrlBtnWrapper.classList.add("active");
   });
 });
-allTextImageButtons.forEach(function (el) {
+allButtonsTextImage.forEach(function (el) {
   el.addEventListener("click", function () {
     el.querySelector(".text-image-btn-text").innerHTML = imageTextFlag;
     imageTextFlag === "text"
@@ -602,59 +665,56 @@ allTextImageButtons.forEach(function (el) {
           .classList.remove("off");
   });
 });
-const ActivateDataZoomButons = function () {
-  allComponentsButtons.forEach(function (el) {
+const ActivateButtonsDatasheets = function () {
+  allButtonsComponents.forEach(function (el) {
     el.classList.remove("active");
   });
-  allDatasheetButtons.forEach(function (el) {
+  allButtonsDatasheets.forEach(function (el) {
     el.classList.add("active");
   });
-  if (!fromExplodeAssemble) datasheetsBackButton.classList.remove("active");
+  if (!fromExplodeAssemble) buttonDatasheetsBack.classList.remove("active");
 };
-const ReturnToExplodeAssemble = function () {
+const ReturnToComponentsSection = function () {
   navLinkDatasheets.classList.remove("current");
   navLinkComponents.classList.add("current");
   sectionDatasheets.classList.remove("active");
-  document.querySelector(".datasheets-btn.datasheets").click();
+  document.querySelector(".datasheets-btn.datasheets").click(); //reset the section - universal type function?
   FlashBlackout(FLASH_BLACKOUT);
   document;
   sectionComponents
-    .querySelector(`.all-wrapper.${explodeOrAssemble}`)
+    .querySelector(`.full-wrapper.${explodeOrAssemble}`)
     .querySelector(".dots-wrapper")
     .classList.add("active");
   document;
   sectionComponents
-    .querySelector(`.all-wrapper.${explodeOrAssemble}`)
+    .querySelector(`.full-wrapper.${explodeOrAssemble}`)
     .classList.add("active");
   sectionComponents.classList.add("active");
-  ActivateDotsButtons();
+  ActivateButtonsComponents();
 };
-const ActivateDataZoomWrapper = function (value) {
+const ActivateFullWrapperDatasheets = function (value) {
   ctrlBtnWrapper.classList.remove("active");
-  datasheetsAllWrapper.classList.remove("active");
-  datasheetsAllWrapper.style.display = "none";
+  gridDatasheets.classList.remove("active");
+  gridDatasheets.style.display = "none";
   if (!fromExplodeAssemble) FlashBlackout();
-  allDatasheetWrappers.forEach(function (el) {
+  allFullWrappersDatasheets.forEach(function (el) {
     el.classList.remove("active");
-    if (el.classList.contains(value)) {
-      el.classList.add("active");
-      setTimeout(function () {
-        el.querySelector(".vid.datazoom").play();
-        el.querySelector(".vid.datazoom-mobile-p").play();
-      }, PLAY_DATASHEET_VID_AFTER_DELAY);
-    }
+    const activeDatasheet = allFullWrappersDatasheets[value];
+    activeDatasheet.classList.add("active");
+    setTimeout(function () {
+      activeDatasheet.querySelector(".vid.datasheet").play();
+      activeDatasheet.querySelector(".vid.datasheet-mobile-p").play();
+    }, PLAY_DATASHEET_VID_AFTER_DELAY);
   });
-  activeDatasheetComp = document.querySelector(
-    `.datasheet-all-wrapper.${value}`
-  );
+  activeDatasheetComp = allFullWrappersDatasheets[value];
 };
 //....................................................................
 //INSTRUCTIONS SECTION
 allClickDivs.forEach(function (el) {
   el.addEventListener("click", function () {
     if (pauseFlag) {
-      ActiveInstructionAllWrapper.querySelector(".vid.instruction").play();
-      ActiveInstructionAllWrapper.querySelector(
+      ActiveFullWrapperInstructions.querySelector(".vid.instruction").play();
+      ActiveFullWrapperInstructions.querySelector(
         ".vid.instruction-mobile-p"
       ).play();
       pauseWrapper.classList.remove("active");
@@ -662,8 +722,8 @@ allClickDivs.forEach(function (el) {
     } else {
       clearTimeout(instructionVidTimer);
       instructionVidTimer = null;
-      ActiveInstructionAllWrapper.querySelector(".vid.instruction").pause();
-      ActiveInstructionAllWrapper.querySelector(
+      ActiveFullWrapperInstructions.querySelector(".vid.instruction").pause();
+      ActiveFullWrapperInstructions.querySelector(
         ".vid.instruction-mobile-p"
       ).pause();
       pauseWrapper.classList.add("active");
@@ -671,7 +731,7 @@ allClickDivs.forEach(function (el) {
     }
   });
 });
-allInstructionVids.forEach(function (el) {
+allVidsInstructions.forEach(function (el) {
   el.addEventListener("ended", function () {
     if (pauseFlag) {
       el.pause();
@@ -685,15 +745,15 @@ allInstructionVids.forEach(function (el) {
           currentVid = 1;
         } else if (currentVid > 4 && !instructionVidLooping) {
           FlashBlackout(FLASH_BLACKOUT);
-          ResetToMainScreen();
+          ResetToInstructionsMainScreen();
           return;
         }
-        ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
+        ActivateFullWrapperInstructionsAndPlayVids(`step-${currentVid}`);
       }, PAUSE_BETWEEN_INSTRUCTION_VIDS);
     }
   });
 });
-allInstructionsButtons.forEach(function (el) {
+allButtonsInstructions.forEach(function (el) {
   el.addEventListener("mouseenter", function () {
     el.classList.add("hovered");
   });
@@ -706,51 +766,51 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   if (!clicked) return;
   clearTimeout(instructionVidTimer);
   instructionVidTimer = null;
-  instructionsTextWrapper.classList.remove("active");
+  textWrapperInstructions.classList.remove("active");
   pauseFlag = false;
   pauseWrapper.classList.remove("active");
-  allInstructionAllWrappers.forEach(function (el) {
+  allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
   });
-  allInstructionVids.forEach(function (el) {
+  allVidsInstructions.forEach(function (el) {
     el.currentTime = 0;
     el.pause();
   });
-  currentVid = Array.from(allInstructionsButtons).indexOf(clicked) + 1;
-  ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
+  currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
+  ActivateFullWrapperInstructionsAndPlayVids(`step-${currentVid}`);
 });
-const ActivateAllWrapperAndPlayVids = function (value) {
-  allInstructionAllWrappers.forEach(function (el) {
+const ActivateFullWrapperInstructionsAndPlayVids = function (value) {
+  allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains(value)) {
       el.classList.add("active");
-      ActiveInstructionAllWrapper = el;
-      ActiveInstructionAllWrapper.querySelectorAll(".vid.instruction").forEach(
-        function (el2) {
-          el2.play();
-        }
-      );
-      ActiveInstructionAllWrapper.querySelectorAll(
+      ActiveFullWrapperInstructions = el;
+      ActiveFullWrapperInstructions.querySelectorAll(
+        ".vid.instruction"
+      ).forEach(function (el2) {
+        el2.play();
+      });
+      ActiveFullWrapperInstructions.querySelectorAll(
         ".vid.instruction-mobile-p"
       ).forEach(function (el2) {
         el2.play();
       });
     }
   });
-  allInstructionsButtons.forEach(function (el) {
+  allButtonsInstructions.forEach(function (el) {
     el.classList.remove("current", "hovered");
     if (el.classList.contains(value)) el.classList.add("current");
   });
 };
-const ResetToMainScreen = function () {
+const ResetToInstructionsMainScreen = function () {
   pauseFlag = false;
   pauseWrapper.classList.remove("active");
   sectionInstructions.classList.add("active");
-  instructionsTextWrapper.classList.add("active");
-  allInstructionsButtons.forEach(function (el) {
+  textWrapperInstructions.classList.add("active");
+  allButtonsInstructions.forEach(function (el) {
     el.classList.remove("current");
   });
-  allInstructionAllWrappers.forEach(function (el) {
+  allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains("step-1")) el.classList.add("active");
     el.querySelector(".vid.instruction").currentTime = 0;
