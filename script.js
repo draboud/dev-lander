@@ -1,16 +1,6 @@
-console.log("universal: Oct 4, 2025");
+console.log("universal: Oct 4, 2025 - CHECK 2");
 //....................................................................
 //CONSTRUCTION ZONE
-// const selectAnIndex = function (selectedIndex) {
-//   console.log(selectedIndex);
-//   myArray.forEach(function (el, index) {
-//     console.log(el);
-//     if (el === selectedIndex) console.log(index);
-//   });
-//   // console.log(myArray[selectedIndex]);
-// };
-// const myArray = ["first", "second", "third"];
-// selectAnIndex(myArray[1]);
 
 //....................................................................
 const DeactivateAllActivateOne = function (deactivate, className, activate) {
@@ -29,8 +19,6 @@ const PlaySectionVids = function (sectionVids) {
     el.play();
   });
 };
-// let activated = DeactivateAllActivateOne(allFeatureButtons, "active", "second");
-// activated.style.backgroundColor = "grey";
 //....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;
@@ -205,6 +193,13 @@ const DeactivateAllSections = function () {
     el.classList.remove("active");
   });
 };
+const DeactivateAllFullWrappers = function () {
+  allSections.forEach(function (el) {
+    el.querySelectorAll(".full-wrapper").forEach(function (el2) {
+      el2.classList.remove("active");
+    });
+  });
+};
 const DeactivateAllButtons = function () {
   allCtrlButtons.forEach(function (el) {
     el.classList.remove("active");
@@ -216,12 +211,30 @@ const ResetAllVideos = function () {
     if (el.classList.contains("end")) el.pause();
   });
 };
-const SetSectionText = function (activeSection) {
-  const sectionFlag = activeSection.classList[0].slice(8);
+const SetSectionFullWrapper = function (activeSection, sectionName) {
+  switch (sectionName) {
+    case "features":
+      activeSection.querySelector(".full-wrapper.main").classList.add("active");
+      break;
+    case "components":
+      activeSection
+        .querySelector(".full-wrapper.explode")
+        .classList.add("active");
+      break;
+    case "datasheets":
+      break;
+    case "instructions":
+      activeSection
+        .querySelector(".full-wrapper.step-1")
+        .classList.add("active");
+      break;
+  }
+};
+const SetSectionText = function (activeSection, sectionName) {
   activeSection.querySelectorAll(".text-wrapper").forEach(function (el) {
     el.classList.remove("active");
   });
-  switch (sectionFlag) {
+  switch (sectionName) {
     case "features":
       activeSection
         .querySelector(".full-wrapper.main")
@@ -234,9 +247,73 @@ const SetSectionText = function (activeSection) {
         .querySelector(".text-wrapper")
         .classList.add("active");
       break;
-    // case "datasheets":
-    //   activeSection.querySelector(".full-wrapper.comp");
+    case "datasheets":
+      allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
+      allDatasheetText.forEach((el) => el.classList.add("active"));
+      break;
+    case "instructions":
+      activeSection.querySelector(".text-wrapper").classList.add("active");
+      break;
   }
+};
+const SetSectionSpecialElements = function (sectionName) {
+  switch (sectionName) {
+    case "features":
+      break;
+    case "components":
+      activeComponentsWrap = fullWrapperExplode;
+      activeComponentsWrap
+        .querySelector(".dots-wrapper")
+        .classList.add("active");
+      dotsFlag = "";
+      break;
+    case "datasheets":
+      imageTextFlag = "text";
+      allButtonsTextImage.forEach(
+        (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
+      );
+      allFullWrappersDatasheets.forEach(function (el) {
+        el.querySelector(".dimmer").classList.add("off");
+        el.querySelectorAll(".img").forEach((el2) =>
+          el2.classList.remove("active")
+        );
+      });
+      gridDatasheets.style.display = "grid";
+      setTimeout(function () {
+        gridDatasheets.classList.add("active");
+      }, FADE_IN_DATASHEETS_GRID); //NECESSARY?
+      fromExplodeAssemble = false;
+      break;
+    case "instructions":
+      pauseFlag = false;
+      pauseWrapper.classList.remove("active");
+      break;
+  }
+};
+const SetSectionButtons = function (sectionName) {
+  switch (sectionName) {
+    case "features":
+      allButtonsFeatures.forEach(function (el) {
+        el.classList.add("active");
+      });
+      break;
+    case "components":
+      buttonComponentsAssemble.classList.remove("active");
+      buttonComponentsExplode.classList.add("active");
+      break;
+    case "datasheets":
+      break;
+    case "instructions":
+      allButtonsInstructions.forEach(function (el) {
+        el.classList.remove("current");
+        el.classList.add("active");
+      });
+      break;
+  }
+};
+const ActivateCtrlButtonWrapper = function (sectionName) {
+  if (sectionName === "datasheets") return;
+  ctrlBtnWrapper.classList.add("active");
 };
 const FlashStartBlackout = function () {
   blackout.classList.remove("off");
@@ -255,107 +332,26 @@ const FlashBlackout = function (value) {
 navBar.addEventListener("click", function (e) {
   const clicked = e.target.closest(".nav_menu_link");
   if (!clicked) return;
-  const activeSectionFlag = clicked.classList[1];
-  ActivateSection(activeSectionFlag);
+  const clickedSectionName = clicked.classList[1];
+  ActivateSection(clickedSectionName);
 });
-const ActivateSection = function (activeSectionFlag) {
+const ActivateSection = function (sectionName) {
   allNavLinks.forEach(function (el) {
     el.classList.remove("current");
-    if (el.classList.contains(activeSectionFlag)) el.classList.add("current");
+    if (el.classList.contains(sectionName)) el.classList.add("current");
   });
-  const activeSection = document.querySelector(`.section_${activeSectionFlag}`);
-  //deactivate all sections
-  //deactivate all buttons
-  //reset and pause all vids
-  //set section text
-  //set section special elements
-  //flash blackout
-  //activate section
+  const activeSection = document.querySelector(`.section_${sectionName}`);
   DeactivateAllSections();
+  DeactivateAllFullWrappers();
   DeactivateAllButtons();
   ResetAllVideos();
-  SetSectionText(activeSection);
-  switch (activeSectionFlag) {
-    case "features":
-      // allFullWrappersFeatures.forEach(function (el) {
-      //   el.classList.remove("active");
-      //   if (el.classList.contains("main")) {
-      //     el.classList.add("active");
-      //     activeVidAllWrapper = el;
-      //   }
-      // });
-      // allTextWrappersFeatures.forEach(function (el) {
-      //   el.classList.remove("active");
-      // });
-      // activeVidAllWrapper
-      //   .querySelector(".text-wrapper")
-      //   .classList.add("active");
-      // allVidsFeatures.forEach(function (el) {
-      //   el.classList.remove("active");
-      //   if (el.classList.contains("main")) el.classList.add("active");
-      // });
-      allButtonsFeatures.forEach(function (el) {
-        el.classList.add("active");
-      });
-      ctrlBtnWrapper.classList.add("active");
-      sectionFeatures.classList.add("active");
-      if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
-      break;
-    case "components":
-      // ResetAllVideos();
-      allFullWrappersComponents.forEach(function (el) {
-        el.classList.remove("active");
-      });
-      fullWrapperExplode.classList.add("active");
-      activeComponentsWrap = fullWrapperExplode;
-      activeComponentsWrap
-        .querySelector(".dots-wrapper")
-        .classList.add("active");
-      dotsFlag = "";
-      // fullWrapperExplode.querySelector(".text-wrapper").classList.add("active");
-      buttonComponentsAssemble.classList.remove("active");
-      buttonComponentsExplode.classList.add("active");
-      ctrlBtnWrapper.classList.add("active");
-      sectionComponents.classList.add("active");
-      if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
-      break;
-    case "datasheets":
-      ResetAllVideos();
-      buttonDatasheetsBack.classList.remove("active");
-      imageTextFlag = "text";
-      allButtonsTextImage.forEach(
-        (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
-      );
-      allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
-      allDatasheetText.forEach((el) => el.classList.add("active"));
-      allFullWrappersDatasheets.forEach(function (el) {
-        el.classList.remove("active");
-        el.querySelector(".text-wrapper").classList.remove("active");
-        el.querySelector(".dimmer").classList.add("off");
-        el.querySelectorAll(".img").forEach((el2) =>
-          el2.classList.remove("active")
-        );
-      });
-      gridDatasheets.style.display = "grid";
-      setTimeout(function () {
-        gridDatasheets.classList.add("active");
-      }, FADE_IN_DATASHEETS_GRID);
-      fromExplodeAssemble = false;
-      ctrlBtnWrapper.classList.remove("active");
-      sectionDatasheets.classList.add("active");
-      if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
-      break;
-    case "instructions":
-      ResetToInstructionsMainScreen();
-      allButtonsInstructions.forEach(function (el) {
-        el.classList.add("active");
-      });
-      ctrlBtnWrapper.classList.add("active");
-      ResetAllVideos();
-      sectionInstructions.classList.add("active");
-      if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
-      break;
-  }
+  SetSectionFullWrapper(activeSection, sectionName);
+  SetSectionText(activeSection, sectionName);
+  SetSectionSpecialElements(sectionName);
+  SetSectionButtons(sectionName);
+  ActivateCtrlButtonWrapper(sectionName);
+  if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
+  document.querySelector(`.section_${sectionName}`).classList.add("active");
 };
 //....................................................................
 blackout.classList.remove("off");

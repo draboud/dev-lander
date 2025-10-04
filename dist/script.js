@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("universal: Oct 4, 2025");
+  console.log("universal: Oct 4, 2025 - CHECK 2");
   var DeactivateAllActivateOne = function(deactivate, className, activate) {
     let activatedValue;
     deactivate.forEach(function(el) {
@@ -158,6 +158,13 @@
       el.classList.remove("active");
     });
   };
+  var DeactivateAllFullWrappers = function() {
+    allSections.forEach(function(el) {
+      el.querySelectorAll(".full-wrapper").forEach(function(el2) {
+        el2.classList.remove("active");
+      });
+    });
+  };
   var DeactivateAllButtons = function() {
     allCtrlButtons.forEach(function(el) {
       el.classList.remove("active");
@@ -169,77 +176,56 @@
       if (el.classList.contains("end")) el.pause();
     });
   };
-  var SetSectionText = function(activeSection) {
-    const sectionFlag = activeSection.classList[0].slice(8);
+  var SetSectionFullWrapper = function(activeSection, sectionName) {
+    switch (sectionName) {
+      case "features":
+        activeSection.querySelector(".full-wrapper.main").classList.add("active");
+        break;
+      case "components":
+        activeSection.querySelector(".full-wrapper.explode").classList.add("active");
+        break;
+      case "datasheets":
+        break;
+      case "instructions":
+        activeSection.querySelector(".full-wrapper.step-1").classList.add("active");
+        break;
+    }
+  };
+  var SetSectionText = function(activeSection, sectionName) {
     activeSection.querySelectorAll(".text-wrapper").forEach(function(el) {
       el.classList.remove("active");
     });
-    switch (sectionFlag) {
+    switch (sectionName) {
       case "features":
         activeSection.querySelector(".full-wrapper.main").querySelector(".text-wrapper").classList.add("active");
         break;
       case "components":
         activeSection.querySelector(".full-wrapper.explode").querySelector(".text-wrapper").classList.add("active");
         break;
+      case "datasheets":
+        allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
+        allDatasheetText.forEach((el) => el.classList.add("active"));
+        break;
+      case "instructions":
+        activeSection.querySelector(".text-wrapper").classList.add("active");
+        break;
     }
   };
-  var FlashBlackout = function(value) {
-    blackout.classList.remove("off");
-    setTimeout(function() {
-      blackout.classList.add("off");
-    }, value);
-  };
-  navBar.addEventListener("click", function(e) {
-    const clicked = e.target.closest(".nav_menu_link");
-    if (!clicked) return;
-    const activeSectionFlag = clicked.classList[1];
-    ActivateSection(activeSectionFlag);
-  });
-  var ActivateSection = function(activeSectionFlag) {
-    allNavLinks.forEach(function(el) {
-      el.classList.remove("current");
-      if (el.classList.contains(activeSectionFlag)) el.classList.add("current");
-    });
-    const activeSection = document.querySelector(`.section_${activeSectionFlag}`);
-    DeactivateAllSections();
-    DeactivateAllButtons();
-    ResetAllVideos();
-    SetSectionText(activeSection);
-    switch (activeSectionFlag) {
+  var SetSectionSpecialElements = function(sectionName) {
+    switch (sectionName) {
       case "features":
-        allButtonsFeatures.forEach(function(el) {
-          el.classList.add("active");
-        });
-        ctrlBtnWrapper.classList.add("active");
-        sectionFeatures.classList.add("active");
-        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "components":
-        allFullWrappersComponents.forEach(function(el) {
-          el.classList.remove("active");
-        });
-        fullWrapperExplode.classList.add("active");
         activeComponentsWrap = fullWrapperExplode;
         activeComponentsWrap.querySelector(".dots-wrapper").classList.add("active");
         dotsFlag = "";
-        buttonComponentsAssemble.classList.remove("active");
-        buttonComponentsExplode.classList.add("active");
-        ctrlBtnWrapper.classList.add("active");
-        sectionComponents.classList.add("active");
-        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "datasheets":
-        ResetAllVideos();
-        buttonDatasheetsBack.classList.remove("active");
         imageTextFlag = "text";
         allButtonsTextImage.forEach(
           (el) => el.querySelector(".text-image-btn-text").innerHTML = "image"
         );
-        allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
-        allDatasheetText.forEach((el) => el.classList.add("active"));
         allFullWrappersDatasheets.forEach(function(el) {
-          el.classList.remove("active");
-          el.querySelector(".text-wrapper").classList.remove("active");
           el.querySelector(".dimmer").classList.add("off");
           el.querySelectorAll(".img").forEach(
             (el2) => el2.classList.remove("active")
@@ -250,21 +236,67 @@
           gridDatasheets.classList.add("active");
         }, FADE_IN_DATASHEETS_GRID);
         fromExplodeAssemble = false;
-        ctrlBtnWrapper.classList.remove("active");
-        sectionDatasheets.classList.add("active");
-        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "instructions":
-        ResetToInstructionsMainScreen();
-        allButtonsInstructions.forEach(function(el) {
-          el.classList.add("active");
-        });
-        ctrlBtnWrapper.classList.add("active");
-        ResetAllVideos();
-        sectionInstructions.classList.add("active");
-        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
+        pauseFlag = false;
+        pauseWrapper.classList.remove("active");
         break;
     }
+  };
+  var SetSectionButtons = function(sectionName) {
+    switch (sectionName) {
+      case "features":
+        allButtonsFeatures.forEach(function(el) {
+          el.classList.add("active");
+        });
+        break;
+      case "components":
+        buttonComponentsAssemble.classList.remove("active");
+        buttonComponentsExplode.classList.add("active");
+        break;
+      case "datasheets":
+        break;
+      case "instructions":
+        allButtonsInstructions.forEach(function(el) {
+          el.classList.remove("current");
+          el.classList.add("active");
+        });
+        break;
+    }
+  };
+  var ActivateCtrlButtonWrapper = function(sectionName) {
+    if (sectionName === "datasheets") return;
+    ctrlBtnWrapper.classList.add("active");
+  };
+  var FlashBlackout = function(value) {
+    blackout.classList.remove("off");
+    setTimeout(function() {
+      blackout.classList.add("off");
+    }, value);
+  };
+  navBar.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".nav_menu_link");
+    if (!clicked) return;
+    const clickedSectionName = clicked.classList[1];
+    ActivateSection(clickedSectionName);
+  });
+  var ActivateSection = function(sectionName) {
+    allNavLinks.forEach(function(el) {
+      el.classList.remove("current");
+      if (el.classList.contains(sectionName)) el.classList.add("current");
+    });
+    const activeSection = document.querySelector(`.section_${sectionName}`);
+    DeactivateAllSections();
+    DeactivateAllFullWrappers();
+    DeactivateAllButtons();
+    ResetAllVideos();
+    SetSectionFullWrapper(activeSection, sectionName);
+    SetSectionText(activeSection, sectionName);
+    SetSectionSpecialElements(sectionName);
+    SetSectionButtons(sectionName);
+    ActivateCtrlButtonWrapper(sectionName);
+    if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
+    document.querySelector(`.section_${sectionName}`).classList.add("active");
   };
   blackout.classList.remove("off");
   document.querySelector(".nav_component").style.display = "none";
