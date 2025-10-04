@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("main: Oct 4, 2025");
+  console.log("universal: Oct 4, 2025");
   var DeactivateAllActivateOne = function(deactivate, className, activate) {
     let activatedValue;
     deactivate.forEach(function(el) {
