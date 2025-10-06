@@ -1,4 +1,4 @@
-console.log("section-vids-function: Oct 6, 2025");
+console.log("ended-timers: Oct 6, 2025");
 //....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;

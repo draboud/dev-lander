@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("section-vids-function: Oct 6, 2025");
+  console.log("ended-timers: Oct 6, 2025");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 5e3;
   var DATASHEET_BUTTON_TIMER = 1500;
