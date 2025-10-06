@@ -1,13 +1,13 @@
-console.log("section-vids-function: Oct 5, 2025 - TEST 1");
+console.log("section-vids-function: Oct 6, 2025");
 //....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;
 const FEATURE_MAIN_VID_REPLAY = 5000;
 const DATASHEET_BUTTON_TIMER = 1500;
 const FADE_IN_COMPONENTS_HEADING = 25;
-const FADE_IN_DATASHEETS_GRID = 25;
+const FADE_IN_DATASHEETS_GRID = 200;
 const FLASH_BLACKOUT = 50;
-const FLASH_START_BLACKOUT = 200;
+const FLASH_START_BLACKOUT = 500;
 const PLAY_DATASHEET_VID_AFTER_DELAY = 200;
 const PAUSE_BETWEEN_INSTRUCTION_VIDS = 2000;
 //....................................................................
@@ -31,10 +31,12 @@ const allSections = [
   sectionInstructions,
 ];
 const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-const allButtonsFeatures = document.querySelectorAll(".features-btn");
-const allButtonsComponents = document.querySelectorAll(".components-btn");
-const allButtonsDatasheets = document.querySelectorAll(".datasheets-btn");
-const allButtonsInstructions = document.querySelectorAll(".instructions-btn");
+const allButtonsFeatures = document.querySelectorAll(".ctrl-btn.features");
+const allButtonsComponents = document.querySelectorAll(".ctrl-btn.components");
+const allButtonsDatasheets = document.querySelectorAll(".ctrl-btn.datasheets");
+const allButtonsInstructions = document.querySelectorAll(
+  ".ctrl-btn.instructions"
+);
 const allCtrlButtons = [
   ...allButtonsFeatures,
   ...allButtonsComponents,
@@ -45,7 +47,7 @@ let activeSection;
 let activeSectionName;
 let activeFullWrapper;
 let activeFullWrapperIndex;
-let activeIndex;
+let allFullWrappers;
 let endVidFlag;
 //....................................................................
 //FEATURES DEFINITIONS
@@ -92,16 +94,16 @@ const allSectionVidsComponents = [
   ...allVidsComponentsMobileP,
 ];
 const buttonComponentsExplode = document.querySelector(
-  ".components-btn.explode"
+  ".ctrl-btn.components.explode"
 );
 const buttonComponentsAssemble = document.querySelector(
-  ".components-btn.assemble"
+  ".ctrl-btn.components.assemble"
 );
 const fullWrapperExplode = sectionComponents.querySelector(
   ".full-wrapper.explode"
 );
-let activeFullWrapperComponents = fullWrapperExplode;
-let dotsFlag;
+let activeFullWrapperComponents;
+let componentsType;
 let datasheetButtonTimer;
 let explodeOrAssemble = "explode";
 let compNumberString;
@@ -112,12 +114,10 @@ let compContentActive = false;
 const allFullWrappersDatasheets = document.querySelectorAll(
   ".full-wrapper.datasheet"
 );
-const buttonDatasheetsBack = document.querySelector(".datasheets-btn.back");
+const buttonDatasheetsBack = document.querySelector(
+  ".ctrl-btn.datasheets.back"
+);
 const gridDatasheets = document.querySelector(".datasheets-grid");
-
-//....................................................................
-//....................................................................
-
 const allVidsDatasheets = document.querySelectorAll(".vid.datasheets");
 const allVidsDatasheetsMobileP = document.querySelectorAll(
   ".vid.datasheets-mobile-p"
@@ -135,6 +135,7 @@ const allDatasheetText = document.querySelectorAll(".datasheet-text");
 let activeFullWrapperDatasheets;
 let imageTextFlag = "text";
 let fromExplodeAssemble = false;
+let datasheetIndex;
 //....................................................................
 //INSTRUCTIONS DEFINITIONS;
 const allFullWrappersInstructions =
@@ -151,7 +152,7 @@ const allSectionVidsInstructions = [
 ];
 const allClickDivs = document.querySelectorAll(".click-div");
 const pauseWrapper = document.querySelector(".pause-wrapper");
-let ActiveFullWrapperInstructions;
+let activeFullWrapperInstructions;
 let currentVid = 1;
 let instructionVidTimer;
 let pauseFlag = false;
@@ -221,11 +222,11 @@ const SetSectionFullWrapper = function (activeSection, sectionName) {
         .classList.add("active");
       break;
   }
-  const allFullWrappers = activeSection.querySelectorAll(".full-wrapper");
+  allFullWrappers = activeSection.querySelectorAll(".full-wrapper");
   allFullWrappers.forEach(function (el, index) {
     if (el.classList.contains("active")) {
       activeFullWrapper = el;
-      activeIndex = index;
+      activeFullWrapperIndex = index;
     }
   });
 };
@@ -263,53 +264,55 @@ const SetSectionSpecialElements = function (sectionName) {
       activeFullWrapperComponents = activeFullWrapper;
       activeFullWrapper.querySelector(".dots-wrapper").classList.add("active");
       SetAllDatasheets(false);
-      dotsFlag = "";
+      componentsType = "";
       break;
     case "datasheets":
       imageTextFlag = "text";
       allButtonsTextImage.forEach(
         (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
       );
-      allFullWrappersDatasheets.forEach(function (el) {
+      allFullWrappers.forEach(function (el) {
         el.querySelector(".dimmer").classList.remove("on");
         el.querySelectorAll(".img").forEach((el2) =>
           el2.classList.remove("active")
         );
       });
       gridDatasheets.style.display = "grid";
-      setTimeout(function () {
-        gridDatasheets.classList.add("active");
-      }, FADE_IN_DATASHEETS_GRID); //NECESSARY?
+      gridDatasheets.classList.add("active");
       fromExplodeAssemble = false;
       break;
     case "instructions":
       pauseFlag = false;
       pauseWrapper.classList.remove("active");
+      allClickDivs.forEach(function (el) {
+        el.style.pointerEvents = "none";
+      });
       break;
   }
 };
 const SetSectionButtons = function (sectionName) {
+  ctrlBtnWrapper
+    .querySelectorAll(`.ctrl-btn.${sectionName}`)
+    .forEach(function (el) {
+      el.classList.remove("active");
+      if (el.classList.contains(sectionName)) el.classList.add("active");
+    });
   switch (sectionName) {
     case "features":
-      allButtonsFeatures.forEach(function (el) {
-        el.classList.add("active");
-      });
       break;
     case "components":
       if (explodeOrAssemble === "explode") {
         buttonComponentsAssemble.classList.remove("active");
-        buttonComponentsExplode.classList.add("active");
       } else {
-        buttonComponentsAssemble.classList.add("active");
         buttonComponentsExplode.classList.remove("active");
       }
       break;
     case "datasheets":
+      ctrlBtnWrapper.classList.remove("active");
       break;
     case "instructions":
       allButtonsInstructions.forEach(function (el) {
         el.classList.remove("current");
-        el.classList.add("active");
       });
       break;
   }
@@ -329,6 +332,58 @@ const FlashBlackout = function (value) {
   setTimeout(function () {
     blackout.classList.add("off");
   }, value);
+};
+const DeactivateAllActivateOne = function (deactivate, className, activate) {
+  let activatedValue;
+  deactivate.forEach(function (el, index) {
+    el.classList.remove(className);
+    if (el.classList.contains(activate)) {
+      el.classList.add(className);
+      activatedValue = el;
+      activeFullWrapperIndex = index;
+    }
+  });
+  return activatedValue;
+};
+const PlaySectionVids = function (endVidFlag) {
+  const allFullWrappers = activeSection.querySelectorAll(".full-wrapper");
+  if (!endVidFlag) {
+    allFullWrappers[activeFullWrapperIndex]
+      .querySelector(`.vid.${activeSectionName}`)
+      .play();
+    allFullWrappers[activeFullWrapperIndex]
+      .querySelector(`.vid.${activeSectionName}-mobile-p`)
+      .play();
+  } else {
+    allFullWrappers[activeFullWrapperIndex]
+      .querySelector(`.vid.${activeSectionName}-end`)
+      .play();
+    allFullWrappers[activeFullWrapperIndex]
+      .querySelector(`.vid.${activeSectionName}-end-mobile-p`)
+      .play();
+  }
+};
+const RewindAndPauseAllSectionVids = function (sectionName) {
+  activeSection.querySelectorAll(`.vid.${sectionName}`).forEach(function (el) {
+    el.currentTime = 0;
+  });
+  activeSection
+    .querySelectorAll(`.vid.${sectionName}-mobile-p`)
+    .forEach(function (el) {
+      el.currentTime = 0;
+    });
+  activeSection
+    .querySelectorAll(`.vid.${sectionName}-end`)
+    .forEach(function (el) {
+      el.currentTime = 0;
+      el.pause();
+    });
+  activeSection
+    .querySelectorAll(`.vid.${sectionName}-end-mobile-p`)
+    .forEach(function (el) {
+      el.currentTime = 0;
+      el.pause();
+    });
 };
 //....................................................................
 //UNIVERSAL OPERATIONS
@@ -361,64 +416,37 @@ const ActivateSection = function (sectionName) {
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 //CONSTRUCTION ZONE
-const DeactivateAllActivateOne = function (deactivate, className, activate) {
-  let activatedValue;
-  deactivate.forEach(function (el, index) {
-    el.classList.remove(className);
-    if (el.classList.contains(activate)) {
-      el.classList.add(className);
-      activatedValue = el;
-      activeIndex = index;
-    }
-  });
-  return activatedValue;
-};
-const PlaySectionVids = function (endVidFlag) {
-  const allFullWrappers = activeSection.querySelectorAll(".full-wrapper");
-  if (!endVidFlag) {
-    allFullWrappers[activeIndex]
-      .querySelector(`.vid.${activeSectionName}`)
-      .play();
-    allFullWrappers[activeIndex]
-      .querySelector(`.vid.${activeSectionName}-mobile-p`)
-      .play();
-  } else {
-    allFullWrappers[activeIndex]
-      .querySelector(`.vid.${activeSectionName}-end`)
-      .play();
-    allFullWrappers[activeIndex]
-      .querySelector(`.vid.${activeSectionName}-end-mobile-p`)
-      .play();
-  }
-};
+
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 //....................................................................
 //FEATURES SECTION
-ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".features-btn");
-  if (!clicked) return;
-  vidName = clicked.classList[1];
-  clearTimeout(newTimer);
-  newTimer = setTimeout(() => {
-    SetActiveVidAndPlay("main");
-  }, FEATURE_MAIN_VID_REPLAY);
-  SetActiveVidAndPlay(vidName);
-});
 allVidsFeatures.forEach(function (el) {
   el.addEventListener("ended", function () {
     el.parentElement.parentElement.parentElement
       .querySelector(".text-wrapper")
       .classList.add("active");
-    SetActiveEndVidAndPlay(vidName);
+    RevealEndVidWrappers(vidName);
+    PlaySectionVids(true);
   });
 });
-const SetActiveVidAndPlay = function (vidName) {
-  RewindAndPauseAllFeatureVids();
+ctrlBtnWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".ctrl-btn.features");
+  if (!clicked) return;
+  vidName = clicked.classList[2];
+  clearTimeout(newTimer);
+  newTimer = setTimeout(() => {
+    SetActiveVid("main");
+  }, FEATURE_MAIN_VID_REPLAY);
+  RewindAndPauseAllSectionVids("features");
+  SetActiveVid(vidName);
+  PlaySectionVids(false);
+});
+const SetActiveVid = function (vidName) {
   allVidWrappersFeatures.forEach(function (el) {
     el.classList.add("active");
   });
-  activeFullWrapper = DeactivateAllActivateOne(
+  activeFullWrapperFeatures = DeactivateAllActivateOne(
     allFullWrappersFeatures,
     "active",
     vidName
@@ -430,19 +458,13 @@ const SetActiveVidAndPlay = function (vidName) {
     activeFullWrapper.querySelector(".text-wrapper").classList.add("active");
     return;
   }
-  PlaySectionVids(false);
 };
-const RewindAndPauseAllFeatureVids = function () {
-  allSectionVidsFeatures.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
-  });
-};
-const SetActiveEndVidAndPlay = function () {
-  activeFullWrapper.querySelectorAll(".video-wrapper").forEach(function (el) {
-    el.classList.remove("active");
-  });
-  PlaySectionVids(true);
+const RevealEndVidWrappers = function () {
+  activeFullWrapperFeatures
+    .querySelectorAll(".video-wrapper")
+    .forEach(function (el) {
+      el.classList.remove("active");
+    });
 };
 //....................................................................
 //COMPONENTS SECTION
@@ -462,10 +484,7 @@ allDotsComponents.forEach(function (el) {
     clearTimeout(datasheetButtonTimer);
   });
   el.addEventListener("mouseout", function () {
-    datasheetButtonTimer = setTimeout(function () {
-      ResetTextWrapperContent(true);
-      compContentActive = false;
-    }, DATASHEET_BUTTON_TIMER);
+    TriggerDatasheetButtonTimer();
   });
 });
 allTextWrappersComponents.forEach(function (el) {
@@ -473,29 +492,29 @@ allTextWrappersComponents.forEach(function (el) {
     clearTimeout(datasheetButtonTimer);
   });
   el.addEventListener("mouseout", function () {
-    datasheetButtonTimer = setTimeout(function () {
-      ResetTextWrapperContent(true);
-      compContentActive = false;
-    }, DATASHEET_BUTTON_TIMER);
+    TriggerDatasheetButtonTimer();
   });
 });
 allVidsComponents.forEach(function (el) {
   el.addEventListener("ended", function () {
     const pastActiveFullWrapperComponents = activeFullWrapperComponents;
     if (activeFullWrapperComponents.classList.contains("explode")) {
-      dotsFlag = "assemble";
+      componentsType = "assemble";
     } else {
-      dotsFlag = "explode";
+      componentsType = "explode";
     }
     activeFullWrapperComponents = DeactivateAllActivateOne(
       allFullWrappersComponents,
       "active",
-      dotsFlag
+      componentsType
     );
     ToggleComponentsImage(pastActiveFullWrapperComponents, true);
     allButtonsComponents.forEach(function (el) {
       el.classList.remove("active");
-      if (el.classList.contains(dotsFlag)) {
+      if (
+        el.classList.contains(componentsType) &&
+        activeSectionName === "components"
+      ) {
         el.classList.add("active");
       }
     });
@@ -515,11 +534,11 @@ allButtonsDatalinks.forEach(function (el) {
     } else {
       compNumberString = `comp-${compNumber[compNumber.length - 1]}`;
     }
-    OpenDatasheet(compNumberString, explodeOrAssemble);
+    OpenDatasheet(compNumberString);
   });
 });
 ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".components-btn");
+  const clicked = e.target.closest(".ctrl-btn.components");
   if (!clicked) return;
   allVidsComponents.forEach(function (el) {
     el.currentTime = 0;
@@ -527,8 +546,8 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   allVidsComponentsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
-  dotsFlag = clicked.classList[1];
-  dotsFlag === "explode"
+  componentsType = clicked.classList[2];
+  componentsType === "explode"
     ? (explodeOrAssemble = "assemble")
     : (explodeOrAssemble = "explode");
   activeFullWrapperComponents
@@ -538,19 +557,11 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   ResetTextWrapperContent(false);
   PlaySectionVids(false);
 });
-const ActivateButtonsComponents = function () {
-  allButtonsDatasheets.forEach(function (el) {
-    el.classList.remove("active");
-  });
-  allButtonsComponents.forEach(function (el) {
-    el.classList.add("active");
-  });
-  if (activeFullWrapperComponents.classList.contains("explode")) {
-    buttonComponentsAssemble.classList.remove("active");
-    explodeOrAssemble = "explode";
-  } else buttonComponentsExplode.classList.remove("active");
-  ctrlBtnWrapper.classList.add("active");
-  explodeOrAssemble = "assemble";
+const TriggerDatasheetButtonTimer = function () {
+  datasheetButtonTimer = setTimeout(function () {
+    ResetTextWrapperContent(true);
+    compContentActive = false;
+  }, DATASHEET_BUTTON_TIMER);
 };
 const FadeInTextWrapperContent = function () {
   if (!compContentActive) return;
@@ -588,55 +599,15 @@ const OpenDatasheet = function (value) {
   navLinkDatasheets.classList.add("current");
   ResetTextWrapperContent(false);
   fromExplodeAssemble = true;
+  activeSection = sectionDatasheets;
+  activeSectionName = "datasheets";
   document.querySelector(`.datasheet-card-wrapper.${value}`).click();
 };
 //....................................................................
 // DATASHEETS SECTION
-ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".datasheets-btn");
-  if (!clicked) return;
-  if (clicked.classList.contains("back")) {
-    ReturnToComponentsSection();
-  } else {
-    buttonDatasheetsBack.classList.remove("active");
-    imageTextFlag = "text";
-    allButtonsTextImage.forEach(
-      (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
-    );
-    allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
-    allDatasheetText.forEach((el) => el.classList.add("active"));
-    allFullWrappersDatasheets.forEach(function (el) {
-      el.classList.remove("active");
-      el.querySelector(".text-wrapper").classList.remove("active");
-      el.querySelector(".dimmer").classList.remove("on");
-      el.querySelectorAll(".img").forEach((el2) =>
-        el2.classList.remove("active")
-      );
-    });
-    allVidsDatasheets.forEach(function (el) {
-      el.currentTime = 0;
-    });
-    allVidsDatasheetsMobileP.forEach(function (el) {
-      el.currentTime = 0;
-    });
-    gridDatasheets.style.display = "grid";
-    setTimeout(function () {
-      gridDatasheets.classList.add("active");
-    }, FADE_IN_DATASHEETS_GRID);
-    fromExplodeAssemble = false;
-    ctrlBtnWrapper.classList.remove("active");
-  }
-});
 gridDatasheets.addEventListener("click", function (e) {
   const clicked = e.target.closest(".datasheet-card-wrapper");
-  let datasheetIndex;
   if (!clicked) return;
-  allVidsDatasheets.forEach(function (el) {
-    el.currentTime = 0;
-  });
-  allVidsDatasheetsMobileP.forEach(function (el) {
-    el.currentTime = 0;
-  });
   gridDatasheets
     .querySelectorAll(".datasheet-card-wrapper")
     .forEach(function (el, index) {
@@ -674,6 +645,41 @@ allButtonsTextImage.forEach(function (el) {
           .classList.add("on");
   });
 });
+ctrlBtnWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".ctrl-btn.datasheets");
+  if (!clicked) return;
+  if (clicked.classList.contains("back")) {
+    ReturnToComponentsSection();
+  } else {
+    buttonDatasheetsBack.classList.remove("active");
+    imageTextFlag = "text";
+    allButtonsTextImage.forEach(
+      (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
+    );
+    allDatasheetSubHeadings.forEach((el) => el.classList.add("active"));
+    allDatasheetText.forEach((el) => el.classList.add("active"));
+    allFullWrappersDatasheets.forEach(function (el) {
+      el.classList.remove("active");
+      el.querySelector(".text-wrapper").classList.remove("active");
+      el.querySelector(".dimmer").classList.remove("on");
+      el.querySelectorAll(".img").forEach((el2) =>
+        el2.classList.remove("active")
+      );
+    });
+    allVidsDatasheets.forEach(function (el) {
+      el.currentTime = 0;
+    });
+    allVidsDatasheetsMobileP.forEach(function (el) {
+      el.currentTime = 0;
+    });
+    gridDatasheets.style.display = "grid";
+    setTimeout(function () {
+      gridDatasheets.classList.add("active");
+    }, FADE_IN_DATASHEETS_GRID);
+    fromExplodeAssemble = false;
+    ctrlBtnWrapper.classList.remove("active");
+  }
+});
 const ActivateButtonsDatasheets = function () {
   allButtonsComponents.forEach(function (el) {
     el.classList.remove("active");
@@ -684,22 +690,8 @@ const ActivateButtonsDatasheets = function () {
   if (!fromExplodeAssemble) buttonDatasheetsBack.classList.remove("active");
 };
 const ReturnToComponentsSection = function () {
-  navLinkDatasheets.classList.remove("current");
-  navLinkComponents.classList.add("current");
-  sectionDatasheets.classList.remove("active");
-  document.querySelector(".datasheets-btn.datasheets").click(); //reset the section - universal type function?
+  document.querySelector(".ctrl-btn.datasheets.datasheets-btn").click(); //reset the section - universal type function?
   FlashBlackout(FLASH_BLACKOUT);
-  // document;
-  // sectionComponents
-  //   .querySelector(`.full-wrapper.${explodeOrAssemble}`)
-  //   .querySelector(".dots-wrapper")
-  //   .classList.add("active");
-  // document;
-  // sectionComponents
-  //   .querySelector(`.full-wrapper.${explodeOrAssemble}`)
-  //   .classList.add("active");
-  // sectionComponents.classList.add("active");
-  // ActivateButtonsComponents();
   ActivateSection("components");
 };
 const SetAllDatasheets = function (turnOn) {
@@ -711,40 +703,37 @@ const SetAllDatasheets = function (turnOn) {
     el.querySelector(".text-wrapper").classList.toggle("active", turnOn);
   });
 };
-const ActivateFullWrapperDatasheets = function (value) {
+const ActivateFullWrapperDatasheets = function (dataSheetIndex) {
   ctrlBtnWrapper.classList.remove("active");
   gridDatasheets.classList.remove("active");
   gridDatasheets.style.display = "none";
   if (!fromExplodeAssemble) FlashBlackout();
   allFullWrappersDatasheets.forEach(function (el) {
     el.classList.remove("active");
-    const activeDatasheet = allFullWrappersDatasheets[value];
-    activeDatasheet.classList.add("active");
-    setTimeout(function () {
-      activeDatasheet.querySelector(".vid.datasheets").play();
-      activeDatasheet.querySelector(".vid.datasheets-mobile-p").play();
-    }, PLAY_DATASHEET_VID_AFTER_DELAY);
   });
-  activeFullWrapperDatasheets = allFullWrappersDatasheets[value];
+  activeFullWrapperDatasheets = allFullWrappersDatasheets[dataSheetIndex];
+  activeFullWrapperDatasheets.classList.add("active");
+  activeFullWrapperIndex = dataSheetIndex;
+
+  setTimeout(function () {
+    PlaySectionVids(false);
+  }, PLAY_DATASHEET_VID_AFTER_DELAY);
 };
 //....................................................................
 //INSTRUCTIONS SECTION
 allClickDivs.forEach(function (el) {
   el.addEventListener("click", function () {
     if (pauseFlag) {
-      ActiveFullWrapperInstructions.querySelector(".vid.instructions").play();
-      ActiveFullWrapperInstructions.querySelector(
-        ".vid.instructions-mobile-p"
-      ).play();
+      PlaySectionVids(false);
       pauseWrapper.classList.remove("active");
       pauseFlag = false;
     } else {
       clearTimeout(instructionVidTimer);
       instructionVidTimer = null;
-      ActiveFullWrapperInstructions.querySelector(".vid.instructions").pause();
-      ActiveFullWrapperInstructions.querySelector(
-        ".vid.instructions-mobile-p"
-      ).pause();
+      activeFullWrapperInstructions.querySelector(".vid.instructions").pause();
+      activeFullWrapperInstructions
+        .querySelector(".vid.instructions-mobile-p")
+        .pause();
       pauseWrapper.classList.add("active");
       pauseFlag = true;
     }
@@ -767,7 +756,8 @@ allVidsInstructions.forEach(function (el) {
           ResetToInstructionsMainScreen();
           return;
         }
-        ActivateFullWrapperInstructionsAndPlayVids(`step-${currentVid}`);
+        ActivateFullWrapperInstructions(`step-${currentVid}`);
+        PlaySectionVids(false);
       }, PAUSE_BETWEEN_INSTRUCTION_VIDS);
     }
   });
@@ -781,38 +771,30 @@ allButtonsInstructions.forEach(function (el) {
   });
 });
 ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".instructions-btn");
+  const clicked = e.target.closest(".ctrl-btn.instructions");
   if (!clicked) return;
   clearTimeout(instructionVidTimer);
   instructionVidTimer = null;
   textWrapperInstructions.classList.remove("active");
   pauseFlag = false;
   pauseWrapper.classList.remove("active");
+  allClickDivs.forEach(function (el) {
+    el.style.pointerEvents = "auto";
+  });
   allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
-  });
-  allVidsInstructions.forEach(function (el) {
-    el.currentTime = 0;
-    el.pause();
   });
   currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
-  ActivateFullWrapperInstructionsAndPlayVids(`step-${currentVid}`);
+  ActivateFullWrapperInstructions(`step-${currentVid}`);
+  RewindAndPauseAllSectionVids("instructions");
+  PlaySectionVids(false);
 });
-const ActivateFullWrapperInstructionsAndPlayVids = function (value) {
-  allFullWrappersInstructions.forEach(function (el) {
-    el.classList.remove("active");
-    if (el.classList.contains(value)) {
-      el.classList.add("active");
-      ActiveFullWrapperInstructions = el;
-    }
-    //................................................
-    activeFullWrapper = DeactivateAllActivateOne(
-      allFullWrappersInstructions,
-      "active",
-      value
-    );
-    PlaySectionVids(false);
-  });
+const ActivateFullWrapperInstructions = function (value) {
+  activeFullWrapperInstructions = DeactivateAllActivateOne(
+    allFullWrappersInstructions,
+    "active",
+    value
+  );
   allButtonsInstructions.forEach(function (el) {
     el.classList.remove("current", "hovered");
     if (el.classList.contains(value)) el.classList.add("current");
@@ -825,6 +807,9 @@ const ResetToInstructionsMainScreen = function () {
   textWrapperInstructions.classList.add("active");
   allButtonsInstructions.forEach(function (el) {
     el.classList.remove("current");
+  });
+  allClickDivs.forEach(function (el) {
+    el.style.pointerEvents = "none";
   });
   allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
