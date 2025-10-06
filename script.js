@@ -1,24 +1,4 @@
-console.log("section-vids-function: Oct 4, 2025");
-//....................................................................
-//CONSTRUCTION ZONE
-
-//....................................................................
-const DeactivateAllActivateOne = function (deactivate, className, activate) {
-  let activatedValue;
-  deactivate.forEach(function (el) {
-    el.classList.remove(className);
-    if (el.classList.contains(activate)) {
-      el.classList.add(className);
-      activatedValue = el;
-    }
-  });
-  return activatedValue;
-};
-const PlaySectionVids = function (sectionVids) {
-  sectionVids.forEach(function (el) {
-    el.play();
-  });
-};
+console.log("section-vids-function: Oct 5, 2025 - TEST 1");
 //....................................................................
 //UNIVERSAL DEFINITIONS
 let blackoutFlag = true;
@@ -60,6 +40,12 @@ const allCtrlButtons = [
   ...allButtonsDatasheets,
   ...allButtonsInstructions,
 ];
+let activeSection;
+let activeSectionName;
+let activeFullWrapper;
+let activeFullWrapperIndex;
+let activeIndex;
+let endVidFlag;
 //....................................................................
 //FEATURES DEFINITIONS
 const allFullWrappersFeatures =
@@ -68,13 +54,13 @@ const allTextWrappersFeatures =
   sectionFeatures.querySelectorAll(".text-wrapper");
 const allVidWrappersFeatures =
   sectionFeatures.querySelectorAll(".video-wrapper");
-const allVidsFeatures = document.querySelectorAll(".vid.feature");
+const allVidsFeatures = document.querySelectorAll(".vid.features");
 const allVidsFeaturesMobileP = document.querySelectorAll(
-  ".vid.feature-mobile-p"
+  ".vid.features-mobile-p"
 );
-const allEndVidsFeatures = document.querySelectorAll(".vid.feature-end");
+const allEndVidsFeatures = document.querySelectorAll(".vid.features-end");
 const allEndVidsFeaturesMobileP = document.querySelectorAll(
-  ".feature-end-mobile-p"
+  ".features-end-mobile-p"
 );
 const allSectionVidsFeatures = [
   ...allVidsFeatures,
@@ -82,8 +68,7 @@ const allSectionVidsFeatures = [
   ...allEndVidsFeatures,
   ...allEndVidsFeaturesMobileP,
 ];
-let activeVidAllWrapper;
-let vidFlag;
+let vidName;
 let newTimer;
 //....................................................................
 //COMPONENTS DEFINITIONS
@@ -96,19 +81,10 @@ const allTextWrappersComponents =
 const allDotsComponents = document.querySelectorAll(".map_dot");
 const allFullWrappersComponents =
   sectionComponents.querySelectorAll(".full-wrapper");
-const vidComponentsExplode = document.querySelector(".vid.comp-explode");
-const vidComponentsExplodeMobileP = document.querySelector(
-  ".vid.comp-explode-mobile-p"
+const allVidsComponents = document.querySelectorAll(".vid.components");
+const allVidsComponentsMobileP = document.querySelectorAll(
+  ".vid.components-mobile-p"
 );
-const vidComponentsAssemble = document.querySelector(".vid.comp-assemble");
-const vidComponentsAssembleMobileP = document.querySelector(
-  ".vid.comp-assemble-mobile-p"
-);
-const allVidsComponents = [vidComponentsExplode, vidComponentsAssemble];
-const allVidsComponentsMobileP = [
-  vidComponentsExplodeMobileP,
-  vidComponentsAssembleMobileP,
-];
 const allSectionVidsComponents = [
   ...allVidsComponents,
   ...allVidsComponentsMobileP,
@@ -122,7 +98,6 @@ const buttonComponentsAssemble = document.querySelector(
 const fullWrapperExplode = sectionComponents.querySelector(
   ".full-wrapper.explode"
 );
-let activeComponentsWrap = fullWrapperExplode;
 let dotsFlag;
 let datasheetButtonTimer;
 let explodeOrAssemble;
@@ -140,9 +115,9 @@ const allFullWrappersDatasheets = document.querySelectorAll(
 );
 //....................................................................
 
-const allVidsDatasheets = document.querySelectorAll(".vid.datasheet");
+const allVidsDatasheets = document.querySelectorAll(".vid.datasheets");
 const allVidsDatasheetsMobileP = document.querySelectorAll(
-  ".vid.datasheet-mobile-p"
+  ".vid.datasheets-mobile-p"
 );
 const allSectionVidsDatasheets = [
   ...allVidsDatasheets,
@@ -163,9 +138,9 @@ const allFullWrappersInstructions =
   sectionInstructions.querySelectorAll(".full-wrapper");
 const textWrapperInstructions =
   sectionInstructions.querySelector(".text-wrapper");
-const allVidsInstructions = document.querySelectorAll(".vid.instruction");
+const allVidsInstructions = document.querySelectorAll(".vid.instructions");
 const allVidsInstructionsMobileP = document.querySelectorAll(
-  ".vid.instruction-mobile-p"
+  ".vid.instructions-mobile-p"
 );
 const allSectionVidsInstructions = [
   ...allVidsInstructions,
@@ -186,6 +161,20 @@ const allVideos = [
   ...allSectionVidsDatasheets,
   ...allSectionVidsInstructions,
 ];
+//....................................................................
+blackout.classList.remove("off");
+document.querySelector(".nav_component").style.display = "none";
+window.addEventListener("load", function () {
+  navLinkInstructions.click();
+  navLinkDatasheets.click();
+  navLinkComponents.click();
+  navLinkFeatures.click();
+  blackoutFlag = false;
+  this.setTimeout(function () {
+    this.document.querySelector(".nav_component").style.display = "flex";
+    blackout.classList.add("off");
+  }, FLASH_START_BLACKOUT);
+});
 //....................................................................
 //UNIVERSAL FUNCTIONS
 const DeactivateAllSections = function () {
@@ -229,6 +218,13 @@ const SetSectionFullWrapper = function (activeSection, sectionName) {
         .classList.add("active");
       break;
   }
+  const allFullWrappers = activeSection.querySelectorAll(".full-wrapper");
+  allFullWrappers.forEach(function (el, index) {
+    if (el.classList.contains("active")) {
+      activeFullWrapper = el;
+      activeIndex = index;
+    }
+  });
 };
 const SetSectionText = function (activeSection, sectionName) {
   activeSection.querySelectorAll(".text-wrapper").forEach(function (el) {
@@ -261,10 +257,7 @@ const SetSectionSpecialElements = function (sectionName) {
     case "features":
       break;
     case "components":
-      activeComponentsWrap = fullWrapperExplode;
-      activeComponentsWrap
-        .querySelector(".dots-wrapper")
-        .classList.add("active");
+      activeFullWrapper.querySelector(".dots-wrapper").classList.add("active");
       dotsFlag = "";
       break;
     case "datasheets":
@@ -340,7 +333,8 @@ const ActivateSection = function (sectionName) {
     el.classList.remove("current");
     if (el.classList.contains(sectionName)) el.classList.add("current");
   });
-  const activeSection = document.querySelector(`.section_${sectionName}`);
+  activeSection = document.querySelector(`.section_${sectionName}`);
+  activeSectionName = activeSection.classList[0].slice(8);
   DeactivateAllSections();
   DeactivateAllFullWrappers();
   DeactivateAllButtons();
@@ -354,60 +348,79 @@ const ActivateSection = function (sectionName) {
   document.querySelector(`.section_${sectionName}`).classList.add("active");
 };
 //....................................................................
-blackout.classList.remove("off");
-document.querySelector(".nav_component").style.display = "none";
-window.addEventListener("load", function () {
-  navLinkInstructions.click();
-  navLinkDatasheets.click();
-  navLinkComponents.click();
-  navLinkFeatures.click();
-  blackoutFlag = false;
-  this.setTimeout(function () {
-    this.document.querySelector(".nav_component").style.display = "flex";
-    blackout.classList.add("off");
-  }, FLASH_START_BLACKOUT);
-});
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//CONSTRUCTION ZONE
+const DeactivateAllActivateOne = function (deactivate, className, activate) {
+  let activatedValue;
+  deactivate.forEach(function (el, index) {
+    el.classList.remove(className);
+    if (el.classList.contains(activate)) {
+      el.classList.add(className);
+      activatedValue = el;
+      activeIndex = index;
+    }
+  });
+  return activatedValue;
+};
+const PlaySectionVids = function (endVidFlag) {
+  const allFullWrappers = activeSection.querySelectorAll(".full-wrapper");
+  if (!endVidFlag) {
+    allFullWrappers[activeIndex]
+      .querySelector(`.vid.${activeSectionName}`)
+      .play();
+    allFullWrappers[activeIndex]
+      .querySelector(`.vid.${activeSectionName}-mobile-p`)
+      .play();
+  } else {
+    allFullWrappers[activeIndex]
+      .querySelector(`.vid.${activeSectionName}-end`)
+      .play();
+    allFullWrappers[activeIndex]
+      .querySelector(`.vid.${activeSectionName}-end-mobile-p`)
+      .play();
+  }
+};
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 //....................................................................
 //FEATURES SECTION
 ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".features-btn");
   if (!clicked) return;
-  vidFlag = clicked.classList[1];
+  vidName = clicked.classList[1];
   clearTimeout(newTimer);
   newTimer = setTimeout(() => {
     SetActiveVidAndPlay("main");
   }, FEATURE_MAIN_VID_REPLAY);
-  SetActiveVidAndPlay(vidFlag);
+  SetActiveVidAndPlay(vidName);
 });
 allVidsFeatures.forEach(function (el) {
   el.addEventListener("ended", function () {
     el.parentElement.parentElement.parentElement
       .querySelector(".text-wrapper")
       .classList.add("active");
-    SetActiveEndVidAndPlay(vidFlag);
+    SetActiveEndVidAndPlay(vidName);
   });
 });
-const SetActiveVidAndPlay = function (vidFlag) {
+const SetActiveVidAndPlay = function (vidName) {
   RewindAndPauseAllFeatureVids();
   allVidWrappersFeatures.forEach(function (el) {
     el.classList.add("active");
   });
-  activeVidAllWrapper = DeactivateAllActivateOne(
+  activeFullWrapper = DeactivateAllActivateOne(
     allFullWrappersFeatures,
     "active",
-    vidFlag
+    vidName
   );
-
   allTextWrappersFeatures.forEach(function (el) {
     el.classList.remove("active");
   });
-  if (vidFlag === "main") {
-    activeVidAllWrapper.querySelector(".text-wrapper").classList.add("active");
+  if (vidName === "main") {
+    activeFullWrapper.querySelector(".text-wrapper").classList.add("active");
     return;
   }
-  // PlaySectionVids();
-  activeVidAllWrapper.querySelector(".vid.feature").play();
-  activeVidAllWrapper.querySelector(".vid.feature-mobile-p").play();
+  PlaySectionVids(false);
 };
 const RewindAndPauseAllFeatureVids = function () {
   allSectionVidsFeatures.forEach(function (el) {
@@ -416,11 +429,10 @@ const RewindAndPauseAllFeatureVids = function () {
   });
 };
 const SetActiveEndVidAndPlay = function () {
-  activeVidAllWrapper.querySelectorAll(".video-wrapper").forEach(function (el) {
+  activeFullWrapper.querySelectorAll(".video-wrapper").forEach(function (el) {
     el.classList.remove("active");
   });
-  activeVidAllWrapper.querySelector(".vid.feature-end").play();
-  activeVidAllWrapper.querySelector(".vid.feature-end-mobile-p").play();
+  PlaySectionVids(true);
 };
 //....................................................................
 //COMPONENTS SECTION
@@ -428,13 +440,11 @@ allDotsComponents.forEach(function (el) {
   el.addEventListener("click", function () {
     compContentActive = true;
     FadeInTextWrapperContent();
-    activeComponentsWrap.querySelector(".heading-generic").innerHTML =
+    activeFullWrapper.querySelector(".heading-generic").innerHTML =
       el.querySelector(".map_dot-name").innerHTML;
-    activeComponentsWrap.querySelector(".text-generic").innerHTML =
+    activeFullWrapper.querySelector(".text-generic").innerHTML =
       el.querySelector(".map_dot-description").innerHTML;
-    activeComponentsWrap
-      .querySelector(".button-datalink")
-      .classList.add("active");
+    activeFullWrapper.querySelector(".button-datalink").classList.add("active");
   });
   el.addEventListener("mouseover", function () {
     clearTimeout(datasheetButtonTimer);
@@ -459,20 +469,25 @@ allTextWrappersComponents.forEach(function (el) {
 });
 allVidsComponents.forEach(function (el) {
   el.addEventListener("ended", function () {
-    const pastActiveComponentsWrap = activeComponentsWrap;
-    if (activeComponentsWrap.classList.contains("explode")) {
-      SetActiveComponentsWrapper("assemble");
+    const pastActiveComponentsWrap = activeFullWrapper;
+    if (activeFullWrapper.classList.contains("explode")) {
+      dotsFlag = "assemble";
     } else {
-      SetActiveComponentsWrapper("explode");
+      dotsFlag = "explode";
     }
-    ToggleComponentsImage(pastActiveComponentsWrap, true);
+    activeFullWrapper = DeactivateAllActivateOne(
+      allFullWrappersComponents,
+      "active",
+      dotsFlag
+    );
+    ToggleComponentsImage(activeFullWrapper, true);
     allButtonsComponents.forEach(function (el) {
       el.classList.remove("active");
       if (el.classList.contains(dotsFlag)) {
         el.classList.add("active");
       }
     });
-    ToggleComponentsImage(activeComponentsWrap, true);
+    ToggleComponentsImage(activeFullWrapper, true);
     compContentActive = true;
     FadeInTextWrapperContent();
     compContentActive = false;
@@ -501,12 +516,10 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     el.currentTime = 0;
   });
   dotsFlag = clicked.classList[1];
-  activeComponentsWrap
-    .querySelector(".text-wrapper")
-    .classList.remove("active");
-  ToggleComponentsImage(activeComponentsWrap, false);
+  activeFullWrapper.querySelector(".text-wrapper").classList.remove("active");
+  ToggleComponentsImage(activeFullWrapper, false);
   ResetTextWrapperContent(false);
-  PlayActiveComponentsVideo();
+  PlaySectionVids(false);
 });
 const ActivateButtonsComponents = function () {
   allButtonsDatasheets.forEach(function (el) {
@@ -515,52 +528,33 @@ const ActivateButtonsComponents = function () {
   allButtonsComponents.forEach(function (el) {
     el.classList.add("active");
   });
-  if (activeComponentsWrap.classList.contains("explode")) {
+  if (activeFullWrapper.classList.contains("explode")) {
     buttonComponentsAssemble.classList.remove("active");
   } else buttonComponentsExplode.classList.remove("active");
   ctrlBtnWrapper.classList.add("active");
 };
 const FadeInTextWrapperContent = function () {
   if (!compContentActive) return;
-  activeComponentsWrap
-    .querySelector(".text-wrapper")
-    .classList.remove("active");
+  activeFullWrapper.querySelector(".text-wrapper").classList.remove("active");
   setTimeout(function () {
-    activeComponentsWrap.querySelector(".text-wrapper").classList.add("active");
+    activeFullWrapper.querySelector(".text-wrapper").classList.add("active");
   }, FADE_IN_COMPONENTS_HEADING);
 };
 const ResetTextWrapperContent = function (fadeInTopWrapperBool) {
   if (fadeInTopWrapperBool) FadeInTextWrapperContent();
-  activeComponentsWrap.querySelector(".heading-generic").innerHTML =
+  activeFullWrapper.querySelector(".heading-generic").innerHTML =
     componentHeaderMain;
-  activeComponentsWrap.querySelector(".text-generic").innerHTML =
+  activeFullWrapper.querySelector(".text-generic").innerHTML =
     componentTextMain;
-  activeComponentsWrap
+  activeFullWrapper
     .querySelector(".button-datalink")
     .classList.remove("active");
-};
-const SetActiveComponentsWrapper = function (value) {
-  dotsFlag = value;
-  allFullWrappersComponents.forEach(function (el) {
-    el.classList.remove("active");
-    if (el.classList.contains(dotsFlag)) {
-      el.classList.add("active");
-      activeComponentsWrap = el;
-    }
-  });
 };
 const ToggleComponentsImage = function (activeImage, state) {
   const allActiveDotsImages = activeImage.querySelectorAll(".dots-wrapper");
   allActiveDotsImages.forEach(function (el) {
     state ? el.classList.add("active") : el.classList.remove("active");
   });
-};
-const PlayActiveComponentsVideo = function () {
-  const vidArray = [
-    document.querySelector(`.vid.comp-${dotsFlag}`),
-    document.querySelector(`.vid.comp-${dotsFlag}-mobile-p`),
-  ];
-  vidArray.forEach((el) => el.play());
 };
 const OpenDatasheet = function (value) {
   compContentActive = false;
@@ -697,9 +691,16 @@ const ActivateFullWrapperDatasheets = function (value) {
     el.classList.remove("active");
     const activeDatasheet = allFullWrappersDatasheets[value];
     activeDatasheet.classList.add("active");
+    //.........................................................
+    // activeFullWrapper = DeactivateAllActivateOne(
+    //   allFullWrappersComponents,
+    //   "active",
+    //   dotsFlag
+    // );
+    //.........................................................
     setTimeout(function () {
-      activeDatasheet.querySelector(".vid.datasheet").play();
-      activeDatasheet.querySelector(".vid.datasheet-mobile-p").play();
+      activeDatasheet.querySelector(".vid.datasheets").play();
+      activeDatasheet.querySelector(".vid.datasheets-mobile-p").play();
     }, PLAY_DATASHEET_VID_AFTER_DELAY);
   });
   activeDatasheetComp = allFullWrappersDatasheets[value];
@@ -709,18 +710,18 @@ const ActivateFullWrapperDatasheets = function (value) {
 allClickDivs.forEach(function (el) {
   el.addEventListener("click", function () {
     if (pauseFlag) {
-      ActiveFullWrapperInstructions.querySelector(".vid.instruction").play();
+      ActiveFullWrapperInstructions.querySelector(".vid.instructions").play();
       ActiveFullWrapperInstructions.querySelector(
-        ".vid.instruction-mobile-p"
+        ".vid.instructions-mobile-p"
       ).play();
       pauseWrapper.classList.remove("active");
       pauseFlag = false;
     } else {
       clearTimeout(instructionVidTimer);
       instructionVidTimer = null;
-      ActiveFullWrapperInstructions.querySelector(".vid.instruction").pause();
+      ActiveFullWrapperInstructions.querySelector(".vid.instructions").pause();
       ActiveFullWrapperInstructions.querySelector(
-        ".vid.instruction-mobile-p"
+        ".vid.instructions-mobile-p"
       ).pause();
       pauseWrapper.classList.add("active");
       pauseFlag = true;
@@ -732,7 +733,7 @@ allVidsInstructions.forEach(function (el) {
     if (pauseFlag) {
       el.pause();
       el.parentElement.parentElement.parentElement
-        .querySelector(".vid.instruction-mobile-p")
+        .querySelector(".vid.instructions-mobile-p")
         .pause();
     } else {
       instructionVidTimer = setTimeout(function () {
@@ -782,12 +783,12 @@ const ActivateFullWrapperInstructionsAndPlayVids = function (value) {
       el.classList.add("active");
       ActiveFullWrapperInstructions = el;
       ActiveFullWrapperInstructions.querySelectorAll(
-        ".vid.instruction"
+        ".vid.instructions"
       ).forEach(function (el2) {
         el2.play();
       });
       ActiveFullWrapperInstructions.querySelectorAll(
-        ".vid.instruction-mobile-p"
+        ".vid.instructions-mobile-p"
       ).forEach(function (el2) {
         el2.play();
       });
@@ -809,10 +810,10 @@ const ResetToInstructionsMainScreen = function () {
   allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains("step-1")) el.classList.add("active");
-    el.querySelector(".vid.instruction").currentTime = 0;
-    el.querySelector(".vid.instruction-mobile-p").currentTime = 0;
-    el.querySelector(".vid.instruction").pause();
-    el.querySelector(".vid.instruction-mobile-p").pause();
+    el.querySelector(".vid.instructions").currentTime = 0;
+    el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
+    el.querySelector(".vid.instructions").pause();
+    el.querySelector(".vid.instructions-mobile-p").pause();
   });
 };
 //....................................................................
