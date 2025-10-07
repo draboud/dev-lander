@@ -447,6 +447,7 @@ allVidsFeatures.forEach(function (el) {
 ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".ctrl-btn.features");
   if (!clicked) return;
+  FlashBlackout(FLASH_BLACKOUT);
   vidName = clicked.classList[2];
   clearTimeout(newTimer);
   newTimer = setTimeout(() => {
@@ -668,7 +669,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".ctrl-btn.datasheets");
   if (!clicked) return;
   if (clicked.classList.contains("back")) {
-    ReturnToComponentsSection();
+    ActivateSection("components");
   } else {
     buttonDatasheetsBack.classList.remove("active");
     imageTextFlag = "text";
@@ -708,11 +709,6 @@ const ActivateButtonsDatasheets = function () {
   });
   if (!fromExplodeAssemble) buttonDatasheetsBack.classList.remove("active");
 };
-const ReturnToComponentsSection = function () {
-  document.querySelector(".ctrl-btn.datasheets.datasheets-btn").click();
-  FlashBlackout(FLASH_BLACKOUT);
-  ActivateSection("components");
-};
 const SetAllDatasheets = function (turnOn) {
   allFullWrappersDatasheets.forEach(function (el) {
     el.querySelector(".dimmer").classList.toggle("on", turnOn);
@@ -726,7 +722,7 @@ const ActivateFullWrapperDatasheets = function (dataSheetIndex) {
   ctrlBtnWrapper.classList.remove("active");
   gridDatasheets.classList.remove("active");
   gridDatasheets.style.display = "none";
-  if (!fromExplodeAssemble) FlashBlackout();
+  if (!fromExplodeAssemble) FlashBlackout(FLASH_BLACKOUT);
   allFullWrappersDatasheets.forEach(function (el) {
     el.classList.remove("active");
   });
@@ -834,6 +830,8 @@ const ResetToInstructionsMainScreen = function () {
     if (el.classList.contains("step-1")) {
       el.querySelector(".vid.instructions").currentTime = 0;
       el.querySelector(".vid.instructions").pause();
+      el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
+      el.querySelector(".vid.instructions-mobile-p").pause();
       el.classList.add("active");
     }
   });
