@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("ended-timers: Oct 6, 2025");
+  console.log("ended-timers: Oct 6, 2025 - TEST-1");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 5e3;
   var DATASHEET_BUTTON_TIMER = 1500;
@@ -176,7 +176,7 @@
   var ResetAllVideos = function() {
     allVideos.forEach(function(el) {
       el.currentTime = 0;
-      if (el.classList.contains("end")) el.pause();
+      el.pause();
     });
   };
   var SetSectionFullWrapper = function(activeSection2, sectionName) {
@@ -315,9 +315,11 @@
   var RewindAndPauseAllSectionVids = function(sectionName) {
     activeSection.querySelectorAll(`.vid.${sectionName}`).forEach(function(el) {
       el.currentTime = 0;
+      el.pause();
     });
     activeSection.querySelectorAll(`.vid.${sectionName}-mobile-p`).forEach(function(el) {
       el.currentTime = 0;
+      el.pause();
     });
     activeSection.querySelectorAll(`.vid.${sectionName}-end`).forEach(function(el) {
       el.currentTime = 0;
@@ -327,6 +329,17 @@
       el.currentTime = 0;
       el.pause();
     });
+  };
+  var EnableDisableNavLinks = function(enable) {
+    if (enable) {
+      allNavLinks.forEach(function(el) {
+        el.style.pointerEvents = "auto";
+      });
+    } else {
+      allNavLinks.forEach(function(el) {
+        el.style.pointerEvents = "none";
+      });
+    }
   };
   navBar.addEventListener("click", function(e) {
     const clicked = e.target.closest(".nav_menu_link");
@@ -357,6 +370,7 @@
     el.addEventListener("ended", function() {
       el.parentElement.parentElement.parentElement.querySelector(".text-wrapper").classList.add("active");
       RevealEndVidWrappers(vidName);
+      EnableDisableNavLinks(true);
       PlaySectionVids(true);
     });
   });
@@ -370,6 +384,7 @@
     }, FEATURE_MAIN_VID_REPLAY);
     RewindAndPauseAllSectionVids("features");
     SetActiveVid(vidName);
+    EnableDisableNavLinks(false);
     PlaySectionVids(false);
   });
   var SetActiveVid = function(vidName2) {
@@ -385,7 +400,7 @@
       el.classList.remove("active");
     });
     if (vidName2 === "main") {
-      activeFullWrapper.querySelector(".text-wrapper").classList.add("active");
+      activeFullWrapperFeatures.querySelector(".text-wrapper").classList.add("active");
       return;
     }
   };
@@ -433,7 +448,7 @@
       ToggleComponentsImage(pastActiveFullWrapperComponents, true);
       allButtonsComponents.forEach(function(el2) {
         el2.classList.remove("active");
-        if (el2.classList.contains(componentsType) && activeSectionName === "components") {
+        if (el2.classList.contains(componentsType)) {
           el2.classList.add("active");
         }
       });
@@ -441,6 +456,7 @@
       compContentActive = true;
       FadeInTextWrapperContent();
       compContentActive = false;
+      EnableDisableNavLinks(true);
     });
   });
   allButtonsDatalinks.forEach(function(el) {
@@ -469,6 +485,7 @@
     activeFullWrapperComponents.querySelector(".text-wrapper").classList.remove("active");
     ToggleComponentsImage(activeFullWrapperComponents, false);
     ResetTextWrapperContent(false);
+    EnableDisableNavLinks(false);
     PlaySectionVids(false);
   });
   var TriggerDatasheetButtonTimer = function() {
@@ -508,6 +525,7 @@
     activeSection = sectionDatasheets;
     activeSectionName = "datasheets";
     document.querySelector(`.datasheet-card-wrapper.${value}`).click();
+    EnableDisableNavLinks(false);
   };
   gridDatasheets.addEventListener("click", function(e) {
     const clicked = e.target.closest(".datasheet-card-wrapper");
@@ -524,6 +542,8 @@
       SetAllDatasheets(true);
       ActivateButtonsDatasheets();
       ctrlBtnWrapper.classList.add("active");
+      if (navLinkDatasheets.style.pointerEvents === "none")
+        EnableDisableNavLinks(true);
     });
   });
   allButtonsTextImage.forEach(function(el) {
@@ -604,6 +624,7 @@
     activeFullWrapperDatasheets = allFullWrappersDatasheets[dataSheetIndex];
     activeFullWrapperDatasheets.classList.add("active");
     activeFullWrapperIndex = dataSheetIndex;
+    EnableDisableNavLinks(false);
     setTimeout(function() {
       PlaySectionVids(false);
     }, PLAY_DATASHEET_VID_AFTER_DELAY);
@@ -630,12 +651,12 @@
         el.pause();
         el.parentElement.parentElement.parentElement.querySelector(".vid.instructions-mobile-p").pause();
       } else {
+        EnableDisableNavLinks(false);
         instructionVidTimer = setTimeout(function() {
           currentVid += 1;
           if (currentVid > 4 && instructionVidLooping) {
             currentVid = 1;
           } else if (currentVid > 4 && !instructionVidLooping) {
-            FlashBlackout(FLASH_BLACKOUT);
             ResetToInstructionsMainScreen();
             return;
           }
@@ -670,6 +691,7 @@
     currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
     ActivateFullWrapperInstructions(`step-${currentVid}`);
     RewindAndPauseAllSectionVids("instructions");
+    EnableDisableNavLinks(true);
     PlaySectionVids(false);
   });
   var ActivateFullWrapperInstructions = function(value) {
@@ -684,9 +706,9 @@
     });
   };
   var ResetToInstructionsMainScreen = function() {
+    blackout.classList.remove("off");
     pauseFlag = false;
     pauseWrapper.classList.remove("active");
-    sectionInstructions.classList.add("active");
     textWrapperInstructions.classList.add("active");
     allButtonsInstructions.forEach(function(el) {
       el.classList.remove("current");
@@ -696,11 +718,12 @@
     });
     allFullWrappersInstructions.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains("step-1")) el.classList.add("active");
-      el.querySelector(".vid.instructions").currentTime = 0;
-      el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
-      el.querySelector(".vid.instructions").pause();
-      el.querySelector(".vid.instructions-mobile-p").pause();
+      if (el.classList.contains("step-1")) {
+        el.querySelector(".vid.instructions").currentTime = 0;
+        el.querySelector(".vid.instructions").pause();
+        el.classList.add("active");
+      }
     });
+    blackout.classList.add("off");
   };
 })();

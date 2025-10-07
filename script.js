@@ -1,6 +1,6 @@
-console.log("ended-timers: Oct 6, 2025");
+console.log("ended-timers: Oct 6, 2025 - TEST-1");
 //....................................................................
-//UNIVERSAL DEFINITIONS
+//GLOBAL DEFINITIONS
 let blackoutFlag = true;
 const FEATURE_MAIN_VID_REPLAY = 5000;
 const DATASHEET_BUTTON_TIMER = 1500;
@@ -180,7 +180,7 @@ window.addEventListener("load", function () {
   }, FLASH_START_BLACKOUT);
 });
 //....................................................................
-//UNIVERSAL FUNCTIONS
+//GLOBAL FUNCTIONS
 const DeactivateAllSections = function () {
   allSections.forEach(function (el) {
     el.classList.remove("active");
@@ -201,7 +201,7 @@ const DeactivateAllButtons = function () {
 const ResetAllVideos = function () {
   allVideos.forEach(function (el) {
     el.currentTime = 0;
-    if (el.classList.contains("end")) el.pause();
+    el.pause();
   });
 };
 const SetSectionFullWrapper = function (activeSection, sectionName) {
@@ -366,11 +366,13 @@ const PlaySectionVids = function (endVidFlag) {
 const RewindAndPauseAllSectionVids = function (sectionName) {
   activeSection.querySelectorAll(`.vid.${sectionName}`).forEach(function (el) {
     el.currentTime = 0;
+    el.pause();
   });
   activeSection
     .querySelectorAll(`.vid.${sectionName}-mobile-p`)
     .forEach(function (el) {
       el.currentTime = 0;
+      el.pause();
     });
   activeSection
     .querySelectorAll(`.vid.${sectionName}-end`)
@@ -385,8 +387,19 @@ const RewindAndPauseAllSectionVids = function (sectionName) {
       el.pause();
     });
 };
+const EnableDisableNavLinks = function (enable) {
+  if (enable) {
+    allNavLinks.forEach(function (el) {
+      el.style.pointerEvents = "auto";
+    });
+  } else {
+    allNavLinks.forEach(function (el) {
+      el.style.pointerEvents = "none";
+    });
+  }
+};
 //....................................................................
-//UNIVERSAL OPERATIONS
+//GLOBAL OPERATIONS
 navBar.addEventListener("click", function (e) {
   const clicked = e.target.closest(".nav_menu_link");
   if (!clicked) return;
@@ -427,6 +440,7 @@ allVidsFeatures.forEach(function (el) {
       .querySelector(".text-wrapper")
       .classList.add("active");
     RevealEndVidWrappers(vidName);
+    EnableDisableNavLinks(true);
     PlaySectionVids(true);
   });
 });
@@ -440,6 +454,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   }, FEATURE_MAIN_VID_REPLAY);
   RewindAndPauseAllSectionVids("features");
   SetActiveVid(vidName);
+  EnableDisableNavLinks(false);
   PlaySectionVids(false);
 });
 const SetActiveVid = function (vidName) {
@@ -455,7 +470,9 @@ const SetActiveVid = function (vidName) {
     el.classList.remove("active");
   });
   if (vidName === "main") {
-    activeFullWrapper.querySelector(".text-wrapper").classList.add("active");
+    activeFullWrapperFeatures
+      .querySelector(".text-wrapper")
+      .classList.add("active");
     return;
   }
 };
@@ -511,10 +528,7 @@ allVidsComponents.forEach(function (el) {
     ToggleComponentsImage(pastActiveFullWrapperComponents, true);
     allButtonsComponents.forEach(function (el) {
       el.classList.remove("active");
-      if (
-        el.classList.contains(componentsType) &&
-        activeSectionName === "components"
-      ) {
+      if (el.classList.contains(componentsType)) {
         el.classList.add("active");
       }
     });
@@ -522,6 +536,7 @@ allVidsComponents.forEach(function (el) {
     compContentActive = true;
     FadeInTextWrapperContent();
     compContentActive = false;
+    EnableDisableNavLinks(true);
   });
 });
 allButtonsDatalinks.forEach(function (el) {
@@ -555,6 +570,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     .classList.remove("active");
   ToggleComponentsImage(activeFullWrapperComponents, false);
   ResetTextWrapperContent(false);
+  EnableDisableNavLinks(false);
   PlaySectionVids(false);
 });
 const TriggerDatasheetButtonTimer = function () {
@@ -602,6 +618,7 @@ const OpenDatasheet = function (value) {
   activeSection = sectionDatasheets;
   activeSectionName = "datasheets";
   document.querySelector(`.datasheet-card-wrapper.${value}`).click();
+  EnableDisableNavLinks(false);
 };
 //....................................................................
 // DATASHEETS SECTION
@@ -622,6 +639,8 @@ allVidsDatasheets.forEach(function (el) {
     SetAllDatasheets(true);
     ActivateButtonsDatasheets();
     ctrlBtnWrapper.classList.add("active");
+    if (navLinkDatasheets.style.pointerEvents === "none")
+      EnableDisableNavLinks(true);
   });
 });
 allButtonsTextImage.forEach(function (el) {
@@ -690,7 +709,7 @@ const ActivateButtonsDatasheets = function () {
   if (!fromExplodeAssemble) buttonDatasheetsBack.classList.remove("active");
 };
 const ReturnToComponentsSection = function () {
-  document.querySelector(".ctrl-btn.datasheets.datasheets-btn").click(); //reset the section - universal type function?
+  document.querySelector(".ctrl-btn.datasheets.datasheets-btn").click();
   FlashBlackout(FLASH_BLACKOUT);
   ActivateSection("components");
 };
@@ -714,7 +733,7 @@ const ActivateFullWrapperDatasheets = function (dataSheetIndex) {
   activeFullWrapperDatasheets = allFullWrappersDatasheets[dataSheetIndex];
   activeFullWrapperDatasheets.classList.add("active");
   activeFullWrapperIndex = dataSheetIndex;
-
+  EnableDisableNavLinks(false);
   setTimeout(function () {
     PlaySectionVids(false);
   }, PLAY_DATASHEET_VID_AFTER_DELAY);
@@ -747,12 +766,13 @@ allVidsInstructions.forEach(function (el) {
         .querySelector(".vid.instructions-mobile-p")
         .pause();
     } else {
+      EnableDisableNavLinks(false);
       instructionVidTimer = setTimeout(function () {
         currentVid += 1;
         if (currentVid > 4 && instructionVidLooping) {
           currentVid = 1;
         } else if (currentVid > 4 && !instructionVidLooping) {
-          FlashBlackout(FLASH_BLACKOUT);
+          // FlashBlackout(FLASH_BLACKOUT);
           ResetToInstructionsMainScreen();
           return;
         }
@@ -787,6 +807,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
   ActivateFullWrapperInstructions(`step-${currentVid}`);
   RewindAndPauseAllSectionVids("instructions");
+  EnableDisableNavLinks(true);
   PlaySectionVids(false);
 });
 const ActivateFullWrapperInstructions = function (value) {
@@ -801,9 +822,9 @@ const ActivateFullWrapperInstructions = function (value) {
   });
 };
 const ResetToInstructionsMainScreen = function () {
+  blackout.classList.remove("off");
   pauseFlag = false;
   pauseWrapper.classList.remove("active");
-  sectionInstructions.classList.add("active");
   textWrapperInstructions.classList.add("active");
   allButtonsInstructions.forEach(function (el) {
     el.classList.remove("current");
@@ -813,12 +834,13 @@ const ResetToInstructionsMainScreen = function () {
   });
   allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
-    if (el.classList.contains("step-1")) el.classList.add("active");
-    el.querySelector(".vid.instructions").currentTime = 0;
-    el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
-    el.querySelector(".vid.instructions").pause();
-    el.querySelector(".vid.instructions-mobile-p").pause();
+    if (el.classList.contains("step-1")) {
+      el.querySelector(".vid.instructions").currentTime = 0;
+      el.querySelector(".vid.instructions").pause();
+      el.classList.add("active");
+    }
   });
+  blackout.classList.add("off");
 };
 //....................................................................
 // NAVIGATION
