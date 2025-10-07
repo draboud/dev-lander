@@ -1,4 +1,4 @@
-console.log("pre-mvc: Oct 7, 2025");
+console.log("pre-mvc: Oct 7, 2025 - TEST-1");
 //....................................................................
 //GLOBAL DEFINITIONS
 let blackoutFlag = true;
@@ -444,6 +444,14 @@ allVidsFeatures.forEach(function (el) {
     PlaySectionVids(true);
   });
 });
+allButtonsFeatures.forEach(function (el) {
+  el.addEventListener("mouseenter", function () {
+    el.classList.add("hovered");
+  });
+  el.addEventListener("mouseleave", function () {
+    el.classList.remove("hovered");
+  });
+});
 ctrlBtnWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".ctrl-btn.features");
   if (!clicked) return;
@@ -474,6 +482,9 @@ const SetActiveVid = function (vidName) {
     activeFullWrapperFeatures
       .querySelector(".text-wrapper")
       .classList.add("active");
+    allButtonsFeatures.forEach(function (el) {
+      el.classList.remove("hovered");
+    });
     return;
   }
 };
@@ -800,7 +811,6 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     el.classList.remove("active");
   });
   currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
-  ActivateFullWrapperInstructions(`step-${currentVid}`);
   RewindAndPauseAllSectionVids("instructions");
   PlaySectionVids(false);
 });
