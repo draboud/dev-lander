@@ -654,6 +654,7 @@
   });
   allVidsInstructions.forEach(function(el) {
     el.addEventListener("ended", function() {
+      EnableDisableNavLinks(false);
       if (pauseFlag) {
         el.pause();
         el.parentElement.parentElement.parentElement.querySelector(".vid.instructions-mobile-p").pause();
@@ -701,6 +702,7 @@
     PlaySectionVids(false);
   });
   var ActivateFullWrapperInstructions = function(value) {
+    EnableDisableNavLinks(true);
     activeFullWrapperInstructions = DeactivateAllActivateOne(
       allFullWrappersInstructions,
       "active",

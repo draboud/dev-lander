@@ -767,6 +767,7 @@ allClickDivs.forEach(function (el) {
 });
 allVidsInstructions.forEach(function (el) {
   el.addEventListener("ended", function () {
+    EnableDisableNavLinks(false);
     if (pauseFlag) {
       el.pause();
       el.parentElement.parentElement.parentElement
@@ -816,6 +817,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   PlaySectionVids(false);
 });
 const ActivateFullWrapperInstructions = function (value) {
+  EnableDisableNavLinks(true);
   activeFullWrapperInstructions = DeactivateAllActivateOne(
     allFullWrappersInstructions,
     "active",
