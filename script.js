@@ -766,13 +766,11 @@ allVidsInstructions.forEach(function (el) {
         .querySelector(".vid.instructions-mobile-p")
         .pause();
     } else {
-      EnableDisableNavLinks(false);
       instructionVidTimer = setTimeout(function () {
         currentVid += 1;
         if (currentVid > 4 && instructionVidLooping) {
           currentVid = 1;
         } else if (currentVid > 4 && !instructionVidLooping) {
-          // FlashBlackout(FLASH_BLACKOUT);
           ResetToInstructionsMainScreen();
           return;
         }
@@ -807,7 +805,6 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
   ActivateFullWrapperInstructions(`step-${currentVid}`);
   RewindAndPauseAllSectionVids("instructions");
-  EnableDisableNavLinks(true);
   PlaySectionVids(false);
 });
 const ActivateFullWrapperInstructions = function (value) {

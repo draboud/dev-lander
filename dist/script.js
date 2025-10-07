@@ -651,7 +651,6 @@
         el.pause();
         el.parentElement.parentElement.parentElement.querySelector(".vid.instructions-mobile-p").pause();
       } else {
-        EnableDisableNavLinks(false);
         instructionVidTimer = setTimeout(function() {
           currentVid += 1;
           if (currentVid > 4 && instructionVidLooping) {
@@ -691,7 +690,6 @@
     currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
     ActivateFullWrapperInstructions(`step-${currentVid}`);
     RewindAndPauseAllSectionVids("instructions");
-    EnableDisableNavLinks(true);
     PlaySectionVids(false);
   });
   var ActivateFullWrapperInstructions = function(value) {
