@@ -812,6 +812,7 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
   });
   currentVid = Array.from(allButtonsInstructions).indexOf(clicked) + 1;
   RewindAndPauseAllSectionVids("instructions");
+  ActivateFullWrapperInstructions(`step-${currentVid}`);
   PlaySectionVids(false);
 });
 const ActivateFullWrapperInstructions = function (value) {
