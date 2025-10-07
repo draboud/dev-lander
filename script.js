@@ -1,4 +1,4 @@
-console.log("ended-timers: Oct 7, 2025 - TEST-1");
+console.log("pre-mvc: Oct 7, 2025");
 //....................................................................
 //GLOBAL DEFINITIONS
 let blackoutFlag = true;

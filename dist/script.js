@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("ended-timers: Oct 7, 2025 - TEST-1");
+  console.log("pre-mvc: Oct 7, 2025");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 5e3;
   var DATASHEET_BUTTON_TIMER = 1500;
