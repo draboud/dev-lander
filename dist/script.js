@@ -672,6 +672,7 @@
   ctrlBtnWrapper.addEventListener("click", function(e) {
     const clicked = e.target.closest(".ctrl-btn.instructions");
     if (!clicked) return;
+    FlashBlackout(FLASH_BLACKOUT);
     clearTimeout(instructionVidTimer);
     instructionVidTimer = null;
     textWrapperInstructions.classList.remove("active");
@@ -700,7 +701,7 @@
     });
   };
   var ResetToInstructionsMainScreen = function() {
-    blackout.classList.remove("off");
+    FlashBlackout(FLASH_BLACKOUT);
     pauseFlag = false;
     pauseWrapper.classList.remove("active");
     textWrapperInstructions.classList.add("active");
@@ -720,6 +721,5 @@
         el.classList.add("active");
       }
     });
-    blackout.classList.add("off");
   };
 })();
