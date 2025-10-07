@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("ended-timers: Oct 6, 2025 - TEST-1");
+  console.log("ended-timers: Oct 7, 2025 - TEST-1");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 5e3;
   var DATASHEET_BUTTON_TIMER = 1500;
@@ -711,15 +711,11 @@
     allClickDivs.forEach(function(el) {
       el.style.pointerEvents = "none";
     });
-    allFullWrappersInstructions.forEach(function(el) {
-      el.classList.remove("active");
-      el.querySelector(".vid.instructions").currentTime = 0;
-      el.querySelector(".vid.instructions").pause();
-      el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
-      el.querySelector(".vid.instructions-mobile-p").pause();
-      if (el.classList.contains("step-1")) {
-        el.classList.add("active");
-      }
-    });
+    activeFullWrapperInstructions = DeactivateAllActivateOne(
+      allFullWrappersInstructions,
+      "active",
+      "step-1"
+    );
+    RewindAndPauseAllSectionVids("instructions");
   };
 })();
