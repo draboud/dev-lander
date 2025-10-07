@@ -156,7 +156,7 @@ let activeFullWrapperInstructions;
 let currentVid = 1;
 let instructionVidTimer;
 let pauseFlag = false;
-let instructionVidLooping = false;
+let instructionVidLooping = true;
 //....................................................................
 //COLLECTION DEFINITIONS
 const allVideos = [
@@ -828,11 +828,11 @@ const ResetToInstructionsMainScreen = function () {
   });
   allFullWrappersInstructions.forEach(function (el) {
     el.classList.remove("active");
+    el.querySelector(".vid.instructions").currentTime = 0;
+    el.querySelector(".vid.instructions").pause();
+    el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
+    el.querySelector(".vid.instructions-mobile-p").pause();
     if (el.classList.contains("step-1")) {
-      el.querySelector(".vid.instructions").currentTime = 0;
-      el.querySelector(".vid.instructions").pause();
-      el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
-      el.querySelector(".vid.instructions-mobile-p").pause();
       el.classList.add("active");
     }
   });

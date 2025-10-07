@@ -136,7 +136,7 @@
   var currentVid = 1;
   var instructionVidTimer;
   var pauseFlag = false;
-  var instructionVidLooping = false;
+  var instructionVidLooping = true;
   var allVideos = [
     ...allSectionVidsFeatures,
     ...allSectionVidsComponents,
@@ -713,11 +713,11 @@
     });
     allFullWrappersInstructions.forEach(function(el) {
       el.classList.remove("active");
+      el.querySelector(".vid.instructions").currentTime = 0;
+      el.querySelector(".vid.instructions").pause();
+      el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
+      el.querySelector(".vid.instructions-mobile-p").pause();
       if (el.classList.contains("step-1")) {
-        el.querySelector(".vid.instructions").currentTime = 0;
-        el.querySelector(".vid.instructions").pause();
-        el.querySelector(".vid.instructions-mobile-p").currentTime = 0;
-        el.querySelector(".vid.instructions-mobile-p").pause();
         el.classList.add("active");
       }
     });
